@@ -1,0 +1,76 @@
+{
+  "data": [
+    {
+      "#": 1,
+      "name": "Kevan Lee",
+      "initials": "KL",
+      "about": "VP of Marketing @ Red Oak",
+      "tag": "VIP",
+      "tag_type": "vip",
+      "following": "123,445",
+      "start_date": "Oct 4, 2025",
+      "active_score": 5,
+      "influence": 99
+    },
+    {
+      "#": 2,
+      "name": "Sarah Johnson",
+      "initials": "SJ",
+      "about": "CEO @ TechCorp",
+      "tag": "Enterprise",
+      "tag_type": "enterprise",
+      "following": "89,234",
+      "start_date": "Sep 15, 2025",
+      "active_score": 4,
+      "influence": 87
+    },
+    {
+      "#": 3,
+      "name": "Mike Chen",
+      "initials": "MC",
+      "about": "Founder @ StartupXYZ",
+      "tag": "Influencer",
+      "tag_type": "influencer",
+      "following": "156,789",
+      "start_date": "Nov 2, 2025",
+      "active_score": 5,
+      "influence": 92
+    },
+    {
+      "#": 4,
+      "name": "Emma Davis",
+      "initials": "ED",
+      "about": "Marketing Director @ BrandCo",
+      "tag": "Prospect",
+      "tag_type": "prospect",
+      "following": "67,432",
+      "start_date": "Oct 20, 2025",
+      "active_score": 3,
+      "influence": 78
+    },
+    {
+      "#": 5,
+      "name": "Alex Rodriguez",
+      "initials": "AR",
+      "about": "Content Creator",
+      "tag": "Creator",
+      "tag_type": "creator",
+      "following": "234,567",
+      "start_date": "Sep 8, 2025",
+      "active_score": 5,
+      "influence": 95
+    },
+    {
+      "#": 6,
+      "name": "Lisa Wang",
+      "initials": "LW",
+      "about": "Product Manager @ InnovateTech",
+      "tag": "Lead",
+      "tag_type": "lead",
+      "following": "45,123",
+      "start_date": "Nov 10, 2025",
+      "active_score": 4,
+      "influence": 82
+    }
+  ]
+}

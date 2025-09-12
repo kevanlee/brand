@@ -5,36 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Brand software</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <style type="text/css">
-      body { font-family: 'Comic Neue', cursive; margin: 0; height: 100%;}
-      * { box-sizing: border-box; }
-      #menu { background-color: #c4c4c4; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-      #menu .left { display: flex; gap: 20px; align-items: center; }
-      #menu .right {}
-      #menu ul {   display: flex;          /* makes li’s sit side by side */
-        gap: 10px;              /* space between items */
-        list-style: none;
-        padding: 0;
-        margin: 0; }
-      #menu ul li { display: inline-block; margin-right: 20px; }
-      #menu ul li a { text-decoration: none; color: #000000; }
-      #menu ul li a:hover { text-decoration: underline; }
-      #menu ul li a:active { text-decoration: underline; }
-      #menu ul li a:visited { text-decoration: underline; }
-      #menu ul li a:focus { text-decoration: underline; }
-      #menu ul li a:hover { text-decoration: underline; }
-      #menu button { background-color: #fff; color: #111; border: 1px solid #111; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-family: 'Comic Neue', cursive; font-size: 16px; }
-      #logo { background-image: url('img/logo.svg'); background-size: contain; background-repeat: no-repeat; background-position: center; width: 118px; height: 34px; }
-      #content { background-image: url('img/bg-wave.svg'); background-size: cover; background-repeat: no-repeat; background-position: center; width: 100%; height: 100%; background-color: #d9d9d9;display: flex; flex-direction: column; gap: 20px; padding: 50px;}
-      #content .header { display: flex; flex-direction: column; align-items: flex-start; gap: 30px; padding: 20px 0 50px; max-width: 700px; }
-      #content h1.title { font-size: 80px; line-height: 90%; margin: 0;}
-      #content h2 { font-size: 36px; margin: 0; }
-      button#start { background-color: #111; color: #fff; padding: 10px 20px; font-family: 'Comic Neue', cursive; font-size: 24px; width: auto; flex: 0 0 auto; }
-      button#start a { text-decoration: none; color: #fff; }
-      #footer { margin-top: 100px; background-image: url('img/BRAND.svg'); background-size: 100% auto; width: 100%; aspect-ratio: 964 / 224; }
-    </style>  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">  
 </head>
 
 <body>
@@ -57,39 +30,48 @@
 <div id="content">
   <div class="header">
     <h1 class="title">Real numbers for magical brands</h1>
-    <h2>Find out the bottom-line impact of your brand marketing efforts.</h2>  
-    <button id="start"><a href="file:///Users/kevanlee/Desktop/brand/get-started.html">Get started →</a></button>
+    <h2 class="subtitle">Find out the bottom-line impact of your brand marketing efforts.</h2>  
+    <a href="/get-started.html"><button id="start">Get started →</button></a>
   </div>
-  </div>
-  <div class="content-body">
+</div>
+<div class="content-body">
   <div class="overview">
     <h3>See actual ROI from your brand-building</h3>
-    <p>Connect your audience data with your customer data to get a real-time picture of how your brand influence your growth.</p>
-    <img src="img/overview.svg" alt="overview">
+    <div class="overview-text">
+      <p>Connect your audience data with your customer data to get a real-time picture of how your brand influence your growth.</p>
+      <img src="img/venn.png" alt="overview">
+    </div>
   </div>
   <div class="features">
     <h3>How it works</h3>
     <div class="how-it-works">
       <div class="how-it-works-item">
-        <img src="img/how-it-works-1.svg" alt="how-it-works-1">
+        <img src="img/sources.png" alt="how-it-works-1">
         <h4>Connect your data</h4>
         <p>Import audience data from multiple brand sources PLUS customer data from your revenue source of truth.</p>
       </div>
       <div class="how-it-works-item">
-        <img src="img/how-it-works-2.svg" alt="how-it-works-2">
+        <img src="img/data-table.png" alt="how-it-works-2">
         <h4>Get audience insights</h4>
         <p>Discover your top audiences, soon-to-be customers, and areas of opportunity — for both brand awareness and future revenue.</p>
       </div>
       <div class="how-it-works-item">
-        <img src="img/how-it-works-3.svg" alt="how-it-works-3">
-        <h4>Build more intentional growth</h4>
+        <img src="img/bar-chart.png" alt="how-it-works-3">
+        <h4>Grow, intentionally</h4>
         <p>Armed with insights, build personalized outreach to deepen relationships with your audience.</p>
       </div>
     </div>
   </div>
+  <div class="cta-block">
+    <h3>Try it out</h3>
+    <p>Get started with your brand data and see the impact on your growth.</p>
+    <a href="/get-started.html"><button id="start">Get started →</button></a>
+  </div>
 </div>
 
 <div id="footer">
+  <p>Built by Bonfire</p>
 </div>
 
+<script src="main.js"></script>
 </body>
