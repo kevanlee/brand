@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeRevenueConnect();
     initializeLoadingScreen();
     initializeDataTables();
+    initializeCustomerModal();
 });
 
 // Category selection functionality
@@ -629,6 +630,111 @@ function initializeDataTables() {
             }
         ]
     });
+    
+    // Add click handler for table rows to show customer modal
+    $('#customers-table tbody').on('click', 'tr', function() {
+        const data = table.row(this).data();
+        if (data) {
+            showCustomerModal(data);
+        }
+    });
+}
+
+// Customer modal functionality
+function showCustomerModal(customerData) {
+    const modal = document.getElementById('customer-modal');
+    
+    // Update header fields (moved to header)
+    document.getElementById('detail-name').textContent = customerData.name;
+    document.getElementById('detail-job-title').textContent = customerData.job_title || 'Unknown';
+    document.getElementById('detail-company').textContent = customerData.company || 'Unknown';
+    document.getElementById('detail-tag').innerHTML = '<span class="tag-pill ' + customerData.tag_type + '">' + customerData.tag + '</span>';
+    
+    // Update top score in influence section
+    const topScoreElement = document.querySelector('.top-score');
+    if (topScoreElement) {
+        topScoreElement.textContent = customerData.influence;
+    }
+    
+    // Update top stars in engagement section
+    const topStarsElement = document.querySelector('.top-stars');
+    if (topStarsElement) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+            const filled = i <= customerData.active_score ? 'filled' : '';
+            stars += '<span class="star ' + filled + '">★</span>';
+        }
+        topStarsElement.innerHTML = '<div class="star-rating">' + stars + '</div>';
+    }
+    
+    // Update detail fields that still exist (only update elements that exist)
+    const detailFollowing = document.getElementById('detail-following');
+    if (detailFollowing) {
+        detailFollowing.textContent = customerData.following;
+    }
+    
+    const detailInfluence = document.getElementById('detail-influence');
+    if (detailInfluence) {
+        detailInfluence.textContent = customerData.influence;
+    }
+    
+    const detailStartDate = document.getElementById('detail-start-date');
+    if (detailStartDate) {
+        detailStartDate.textContent = customerData.start_date;
+    }
+    
+    const detailLastActivity = document.getElementById('detail-last-activity');
+    if (detailLastActivity) {
+        detailLastActivity.textContent = customerData.last_activity || 'Unknown';
+    }
+    
+    const detailEngagementRate = document.getElementById('detail-engagement-rate');
+    if (detailEngagementRate) {
+        detailEngagementRate.textContent = customerData.engagement_rate || 'Unknown';
+    }
+    
+    const detailReferralSource = document.getElementById('detail-referral-source');
+    if (detailReferralSource) {
+        detailReferralSource.textContent = customerData.referral_source || 'Unknown';
+    }
+    
+    // Show the modal
+    modal.style.display = 'flex';
+}
+
+// Initialize customer modal functionality
+function initializeCustomerModal() {
+    const modal = document.getElementById('customer-modal');
+    const modalClose = modal.querySelector('.modal-close');
+    const modalConfirm = modal.querySelector('.modal-confirm');
+    
+    // Close modal when clicking the X
+    if (modalClose) {
+        modalClose.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+    
+    // Close modal when clicking the Close button (if it exists)
+    if (modalConfirm) {
+        modalConfirm.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+    }
+    
+    // Close modal when clicking outside of it
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            modal.style.display = 'none';
+        }
+    });
 }
 
 // Export functions for use in other scripts if needed
@@ -642,5 +748,7 @@ window.BrandApp = {
     initializeAudienceConnect,
     initializeRevenueConnect,
     initializeLoadingScreen,
-    initializeDataTables
+    initializeDataTables,
+    initializeCustomerModal,
+    showCustomerModal
 };

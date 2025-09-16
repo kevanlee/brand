@@ -39,7 +39,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center; 
 }
 
-#menu .right {}
+#menu .right {
+  /* Right side menu items */
+}
 
 #menu ul {   
   display: flex;          /* makes li's sit side by side */
@@ -680,7 +682,6 @@ form input[type="url"]::placeholder {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #d9d9d9;
 }
 
 .modal-header h3 {
@@ -689,17 +690,27 @@ form input[type="url"]::placeholder {
 }
 
 .modal-close {
-  font-size: 24px;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url('img/x-close.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
-  color: #999;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .modal-close:hover {
-  color: #111;
+  opacity: 1;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: 0 20px 20px 20px;
 }
 
 .modal-footer {
@@ -707,7 +718,6 @@ form input[type="url"]::placeholder {
   justify-content: flex-end;
   gap: 10px;
   padding: 20px;
-  border-top: 1px solid #d9d9d9;
 }
 
 .modal-confirm {
@@ -1055,3 +1065,197 @@ form input[type="url"]::placeholder {
   color: #111;
 }
 
+/* Customer Detail Modal Styles */
+.customer-detail-grid {
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #E9E9E7;
+  border-bottom: 1px solid #E9E9E7;
+}
+
+.detail-section {
+  border-right: 1px solid #E9E9E7;
+  padding: 15px;
+  max-width: 75%;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 5px 0;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: #111;
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+
+/* Make table rows clickable */
+#customers-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#customers-table tbody tr:hover {
+  background-color: #f0f0f0 !important;
+}
+
+/* Modal content adjustments for customer details */
+#customer-modal .modal-content {
+  max-width: 800px;
+  width: 95%;
+  padding: 55px;
+  position: relative;
+}
+
+#customer-modal .modal-body {
+  padding: 25px;
+}
+
+/* Modal header layout */
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 20px;
+}
+
+.modal-header-left {
+  width: 200px;
+  height: 200px; 
+  border: 1px solid #111;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #d9d9d9;
+}
+
+.modal-header-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: flex-end;
+  height: 200px;
+}
+
+.modal-header-right h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-family: 'Comic Neue', cursive;
+  text-transform: none;
+  color: #111;
+  position: relative;
+}
+
+.modal-header-right h3::after {
+  content: '';
+  display: block;
+  background-image: url('img/underline-sqwiggle.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: left center;
+  height: 12px;
+  width: 150px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-header-right h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-family: 'Comic Neue', cursive;
+  text-transform: none;
+  color: #666;
+  font-weight: normal;
+}
+
+.modal-header-right .detail-value {
+  font-family: 'Comic Neue', cursive;
+  font-size: 14px;
+  color: #111;
+  font-weight: 600;
+}
+
+/* Social network logo styling */
+.social-network-logo {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-color: #ddd;
+  border-radius: 2px;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Engagement section styling */
+.engagement-section, .influence-section {
+  width: 50%;
+  padding: 15px;
+}
+
+.engagement-section { border-right: 1px solid #E9E9E7; }
+
+.top-info {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 10px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  height: 30px;
+}
+
+.engagement-section h4, .influence-section h4, .detail-section h4 {
+  font-family: 'Comic Neue', cursive;
+  font-size: 1.2rem;
+  text-transform: none;
+  margin: 10px 0 15px 0;
+  color: #111;
+}
+
+.engagement-section h4, .influence-section h4 {
+  margin: 0; padding: 0;
+}
+
+.top-score { 
+  background-color: #d9d9d9;
+  padding: 5px 10px;
+  border-radius: 50%;
+}
+
+.social-network-logo {
+  width: 20px;
+  height: 20px;
+  background-color: #cdcdcd;
+  border-radius: 4px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.date-divider {
+  color: #c4c4c4;
+  margin-bottom: 10px;
+  padding: 5px 0;
+}
+
+.detail-value { color: #c4c4c4; font-weight: normal; }
