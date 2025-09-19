@@ -2,7 +2,13 @@
 
 **Real numbers for magical brands**
 
-Find out the bottom-line impact of your brand marketing efforts by connecting your audience data with your customer data to get a real-time picture of how your brand influences your growth.
+Brand lets teams prove that community building and storytelling translate into revenue. Import an audience list (a Substack export, TikTok follower sync, Instagram or LinkedIn connection list, etc.) and overlap it with your customer or pipeline data from Shopify, HubSpot, Salesforce, and other revenue systems. The result is a single place to measure how brand activity drives pipeline, purchase events, and lifetime value.
+
+### Product overview
+
+- **Audience ↔ Customer Overlap**: Upload or connect both sides to instantly see how many community members are already customers, where the white space is, and which accounts belong in ABM plays.
+- **Engagement to Revenue Lift**: Track how engagement moments map to orders, revenue lift windows, and LTV differences (e.g., “followers who comment on IG are 2.5× more likely to buy within a week”).
+- **Pipeline Opportunities**: Surface prospects that follow your brand but aren’t yet in your CRM stage, highlighting the best next conversations for sales and partnerships teams.
 
 ## 🚀 Features
 

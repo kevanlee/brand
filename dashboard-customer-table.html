@@ -31,13 +31,106 @@
 
 <div id="content" class="dashboard" style="gap: 0px;">
   <div class="header-tabs">
-    <h4 class="active" data-tab="customers">Customers (CRM)</h4>
+    <h4 class="active" data-tab="overview">Overview</h4>
+    <h4 data-tab="customers">Customers (CRM)</h4>
     <h4 data-tab="insights">Insights (Data)</h4>
   </div>
-  
+
+  <!-- Overview Tab Content -->
+  <div id="overview-content" class="tab-content active">
+    <div class="table-container">
+      <div class="overview-summary">
+        <div class="overview-visual">
+          <img src="img/venn.png" alt="Overlap between audience and customers" />
+          <p class="venn-caption">Audience &amp; customer overlap — refreshed nightly</p>
+        </div>
+        <div class="overview-metrics">
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Total audience</span>
+              <span class="metric-value">48,214</span>
+              <span class="metric-subtext">connected followers &amp; subscribers</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Customers</span>
+              <span class="metric-value">12,487</span>
+              <span class="metric-subtext">Shopify &amp; Salesforce combined</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Audience → customer overlap</span>
+              <span class="metric-value">6,932</span>
+              <span class="metric-subtext">14% of total audience</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Warm pipeline</span>
+              <span class="metric-value">1,118</span>
+              <span class="metric-subtext">followers not yet in CRM stages</span>
+            </div>
+          </div>
+          <div class="metrics-grid secondary">
+            <div class="metric-card">
+              <span class="metric-label">Engagement lift</span>
+              <span class="metric-value">2.5×</span>
+              <span class="metric-subtext">likelihood to purchase within 7 days after IG interactions</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Avg. LTV uplift</span>
+              <span class="metric-value">+38%</span>
+              <span class="metric-subtext">audience-aligned customers vs baseline</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">New ABM targets</span>
+              <span class="metric-value">47</span>
+              <span class="metric-subtext">execs engaging on LinkedIn last week</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Churn risk</span>
+              <span class="metric-value">3.1%</span>
+              <span class="metric-subtext">customers with no engagement in 90 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overview-highlights">
+        <h5>Highlights</h5>
+        <ul>
+          <li>Top creators in your audience who are not yet customers are queued for outreach in the table below.</li>
+          <li>Engagement lift metrics are placeholders and will be updated once attribution modeling is connected.</li>
+          <li>Use the tabs to drill into platform-specific overlap once data sources are synced.</li>
+        </ul>
+      </div>
+
+      <div class="table-tabs">
+        <div class="tab active">Top audience</div>
+        <div class="tab">All audience</div>
+        <div class="tab">Instagram</div>
+        <div class="tab">TikTok</div>
+        <div class="tab">Substack</div>
+      </div>
+      <table id="overview-table" class="all-audience-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>About</th>
+            <th>Tag</th>
+            <th>Following</th>
+            <th>Start date</th>
+            <th>Active score</th>
+            <th>Influence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data will be loaded via DataTables -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Customers Tab Content -->
-  <div id="customers-content" class="tab-content active">
-    <div id="customer-table">
+  <div id="customers-content" class="tab-content">
+    <div class="table-container">
       <div class="table-tabs">
         <div class="tab active">Top audience</div>
         <div class="tab">All audience</div>
@@ -67,7 +160,7 @@
   
   <!-- Insights Tab Content -->
   <div id="insights-content" class="tab-content">
-    <div id="customer-table">
+    <div class="table-container">
       <div class="table-tabs">
         <div class="tab active">Overview</div>
         <div class="tab">Revenue</div>
