@@ -479,11 +479,11 @@ form input[type="url"]::placeholder {
 }
 
 /* Customer table styles */
-#customer-table { 
-  background-color: #ffffff; 
-  padding: 50px; 
-  border-radius: none; 
-  border: 1px solid #cdcdcd;  
+.table-container {
+  background-color: #ffffff;
+  padding: 50px;
+  border-radius: 0;
+  border: 1px solid #cdcdcd;
 }
 
 .header-tabs, .table-tabs { 
@@ -527,8 +527,111 @@ form input[type="url"]::placeholder {
   cursor: pointer; 
 }
 
-.table-tabs .active { 
-  border-bottom: 2px solid #cdcdcd; 
+.table-tabs .active {
+  border-bottom: 2px solid #cdcdcd;
+}
+
+.overview-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: stretch;
+  margin-bottom: 30px;
+}
+
+.overview-visual {
+  flex: 1 1 280px;
+  background: #f6f6f6;
+  border: 1px solid #cdcdcd;
+  border-radius: 8px;
+  padding: 30px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.overview-visual img {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+}
+
+.venn-caption {
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  font-family: 'Comic Neue', cursive;
+}
+
+.overview-metrics {
+  flex: 2 1 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.metrics-grid.secondary {
+  opacity: 0.9;
+}
+
+.metric-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 140px;
+}
+
+.metric-card .metric-label {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.metric-card .metric-value {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.metric-subtext {
+  font-size: 12px;
+  color: #666;
+  font-family: 'Comic Neue', cursive;
+  line-height: 1.4;
+}
+
+.overview-highlights {
+  background: #f9f9f9;
+  border: 1px dashed #cdcdcd;
+  border-radius: 8px;
+  padding: 20px 25px;
+  margin-bottom: 30px;
+}
+
+.overview-highlights h5 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.overview-highlights ul {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: #333;
 }
 
 /* Table styles */
