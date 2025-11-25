@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeLoadingScreen();
     initializeDataTables();
     initializeCustomerModal();
+    initializeOverlapDashboard();
 });
 
 // Category selection functionality
@@ -136,6 +137,37 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+// Helper: basic CSV validation
+function isCsvLike(file) {
+    if (!file) return false;
+    const name = (file.name || '').toLowerCase();
+    return file.type === 'text/csv' || name.endsWith('.csv') || name.endsWith('.zip');
+}
+
+// Helper: upload CSV/ZIP to backend with a source identifier
+function uploadAudienceFile(file, source, onSuccess, onError) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('source', source);
+
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (typeof onSuccess === 'function') {
+                onSuccess(data);
+            }
+        })
+        .catch(err => {
+            console.error('Upload error:', err);
+            if (typeof onError === 'function') {
+                onError(err);
+            }
+        });
+}
+
 // Getting started form functionality
 function initializeGettingStartedForm() {
     const form = document.getElementById('getting-started-form');
@@ -222,9 +254,9 @@ function initializeGettingStartedForm() {
 function initializeAudienceConnect() {
     const form = document.getElementById('audience-connect-form');
     const connectButtons = document.querySelectorAll('.connect-btn');
-    const csvDropZone = document.getElementById('csv-drop-zone');
-    const csvFileInput = document.getElementById('csv-file-input');
-    const fileInfo = document.getElementById('file-info');
+    const csvDropZone = document.getElementById('substack-csv-drop-zone');
+    const csvFileInput = document.getElementById('substack-csv-file-input');
+    const fileInfo = document.getElementById('substack-file-info');
     const modal = document.getElementById('connection-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalMessage = document.getElementById('modal-message');
@@ -292,8 +324,10 @@ function initializeAudienceConnect() {
         
         // File input change
         csvFileInput.addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
+            if (e.target.files.length > 0 && isCsvLike(e.target.files[0])) {
                 handleFileUpload(e.target.files[0]);
+            } else {
+                showNotification('Please upload a CSV or ZIP file.', 'error');
             }
         });
         
@@ -313,48 +347,42 @@ function initializeAudienceConnect() {
             csvDropZone.classList.remove('drag-over');
             
             const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'text/csv') {
+            if (files.length > 0 && isCsvLike(files[0])) {
                 handleFileUpload(files[0]);
             } else {
-                showNotification('Please upload a CSV file.', 'error');
+                showNotification('Please upload a CSV or ZIP file.', 'error');
             }
         });
     }
-    
-    function handleFileUpload(file) {
-  hasUploadedFile = true;
-  csvDropZone.classList.add('has-file');
 
-  fileInfo.innerHTML = `
+    function handleFileUpload(file) {
+        hasUploadedFile = true;
+        csvDropZone.classList.add('has-file');
+
+        fileInfo.innerHTML = `
     <p><strong>📄 ${file.name}</strong></p>
     <p>Size: ${(file.size / 1024).toFixed(1)} KB</p>
     <p>Type: ${file.type || 'CSV file'}</p>
   `;
-  fileInfo.style.display = 'block';
+        fileInfo.style.display = 'block';
 
-  clearError();
-  showNotification('CSV file uploaded successfully! Processing now...', 'success');
+        clearError();
+        showNotification('CSV file uploaded successfully! Processing now...', 'success');
 
-  // ---- NEW: actually send to backend ----
-  const formData = new FormData();
-  formData.append('file', file);
-
-  fetch('/api/upload', {
-    method: 'POST',
-    body: formData
-  })
-    .then(res => res.json())
-    .then(data => {
-      console.log('Upload result:', data);
-      // You can show feedback to the user
-      showNotification(`✅ Uploaded! Found ${data.count} subscribers.`, 'success');
-      fileInfo.innerHTML += `<p><strong>Found ${data.count} subscribers</strong></p>`;
-    })
-    .catch(err => {
-      console.error('Upload error:', err);
-      showNotification('❌ Upload failed. Please try again.', 'error');
-    });
-}
+        uploadAudienceFile(
+            file,
+            'substack',
+            (data) => {
+                console.log('Upload result:', data);
+                // You can show feedback to the user
+                showNotification(`✅ Uploaded! Found ${data.count} subscribers.`, 'success');
+                fileInfo.innerHTML += `<p><strong>Found ${data.count} subscribers</strong></p>`;
+            },
+            () => {
+                showNotification('❌ Upload failed. Please try again.', 'error');
+            }
+        );
+    }
 
     
     // Skip button functionality
@@ -392,9 +420,9 @@ function initializeAudienceConnect() {
 function initializeRevenueConnect() {
     const form = document.getElementById('revenue-connect-form');
     const connectButtons = document.querySelectorAll('.connect-btn');
-    const csvDropZone = document.getElementById('csv-drop-zone');
-    const csvFileInput = document.getElementById('csv-file-input');
-    const fileInfo = document.getElementById('file-info');
+    const csvDropZone = document.getElementById('crm-csv-drop-zone');
+    const csvFileInput = document.getElementById('crm-csv-file-input');
+    const fileInfo = document.getElementById('crm-file-info');
     const modal = document.getElementById('connection-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalMessage = document.getElementById('modal-message');
@@ -458,12 +486,15 @@ function initializeRevenueConnect() {
             csvFileInput.click();
         });
         
-        csvFileInput.addEventListener('change', function(e) {
+            csvFileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) {
+            if (file && isCsvLike(file)) {
                 hasUploadedFile = true;
                 clearError();
                 showFileInfo(file);
+                uploadCrmFile(file);
+            } else {
+                showNotification('Please upload a CSV or ZIP file.', 'error');
             }
         });
         
@@ -483,11 +514,14 @@ function initializeRevenueConnect() {
             csvDropZone.classList.remove('drag-over');
             
             const files = e.dataTransfer.files;
-            if (files.length > 0) {
+            if (files.length > 0 && isCsvLike(files[0])) {
                 const file = files[0];
                 hasUploadedFile = true;
                 clearError();
                 showFileInfo(file);
+                uploadCrmFile(file);
+            } else {
+                showNotification('Please upload a CSV or ZIP file.', 'error');
             }
         });
     }
@@ -502,6 +536,23 @@ function initializeRevenueConnect() {
             `;
             csvDropZone.classList.add('has-file');
         }
+    }
+
+    function uploadCrmFile(file) {
+        showNotification('CSV file uploaded successfully! Processing now...', 'success');
+        uploadAudienceFile(
+            file,
+            'crm',
+            (data) => {
+                showNotification(`✅ CRM uploaded! Found ${data.count} customers.`, 'success');
+                if (fileInfo) {
+                    fileInfo.innerHTML += `<p><strong>Found ${data.count} customer records</strong></p>`;
+                }
+            },
+            () => {
+                showNotification('❌ Upload failed. Please try again.', 'error');
+            }
+        );
     }
     
     // Skip button functionality
@@ -590,6 +641,67 @@ function startLoadingAnimation() {
             progressText.textContent = Math.round(progress) + '%';
         }
     }, interval);
+}
+
+// Overlap dashboard functionality
+function initializeOverlapDashboard() {
+    const overlapContainer = document.getElementById('overlap-summary');
+    if (!overlapContainer) {
+        return;
+    }
+
+    const substackCount = document.getElementById('overlap-substack-count');
+    const crmCount = document.getElementById('overlap-crm-count');
+    const overlapCount = document.getElementById('overlap-count');
+    const overlapRate = document.getElementById('overlap-rate');
+    const sampleBody = document.getElementById('overlap-sample-body');
+    const emptyState = document.getElementById('overlap-empty-state');
+    const refreshButton = document.getElementById('refresh-overlap');
+
+    const renderData = (data) => {
+        if (substackCount) substackCount.textContent = data.substackCount || 0;
+        if (crmCount) crmCount.textContent = data.crmCount || 0;
+        if (overlapCount) overlapCount.textContent = data.overlapCount || 0;
+        if (overlapRate) overlapRate.textContent = `${data.overlapRate || 0}% overlap`;
+
+        if (sampleBody) {
+            sampleBody.innerHTML = '';
+            const samples = data.sampleOverlap || [];
+            if (samples.length === 0) {
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+
+            if (emptyState) emptyState.style.display = 'none';
+            samples.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.company}</td>
+                `;
+                sampleBody.appendChild(row);
+            });
+        }
+    };
+
+    const loadOverlap = () => {
+        fetch('/api/overlap')
+            .then(res => res.json())
+            .then(data => {
+                renderData(data);
+            })
+            .catch(err => {
+                console.error('Overlap fetch failed', err);
+                showNotification('Unable to load overlap yet. Upload both CSVs to see matches.', 'error');
+            });
+    };
+
+    if (refreshButton) {
+        refreshButton.addEventListener('click', loadOverlap);
+    }
+
+    loadOverlap();
 }
 
 // DataTables initialization
