@@ -75,7 +75,55 @@
         <div class="tab">Channels</div>
         <div class="tab">Growth</div>
       </div>
-      
+
+      <div class="overlap-summary" id="overlap-summary">
+        <div class="overlap-header">
+          <div>
+            <p class="eyebrow">Analysis</p>
+            <h3>Substack ↔ CRM overlap</h3>
+            <p class="muted">Upload both subscriber and CRM CSVs to see how many readers already exist in your funnel.</p>
+          </div>
+          <button class="secondary" id="refresh-overlap">Refresh overlap</button>
+        </div>
+
+        <div class="overlap-cards">
+          <div class="overlap-card">
+            <p class="label">Substack subscribers</p>
+            <h4 id="overlap-substack-count">0</h4>
+          </div>
+          <div class="overlap-card">
+            <p class="label">CRM contacts</p>
+            <h4 id="overlap-crm-count">0</h4>
+          </div>
+          <div class="overlap-card">
+            <p class="label">Overlap</p>
+            <h4 id="overlap-count">0</h4>
+          </div>
+          <div class="overlap-card highlight">
+            <p class="label">Conversion signal</p>
+            <h4 id="overlap-rate">0% overlap</h4>
+            <p class="muted">Share of Substack readers already in CRM</p>
+          </div>
+        </div>
+
+        <div class="overlap-table">
+          <div class="overlap-table-header">
+            <h4>Recent overlapping contacts</h4>
+            <p id="overlap-empty-state" class="muted">Upload a Substack CSV and a CRM CSV to see matching readers.</p>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Company / Website</th>
+              </tr>
+            </thead>
+            <tbody id="overlap-sample-body"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="insights-overview">
         <div class="metrics-row">
           <div class="metric-item">
