@@ -959,6 +959,105 @@ form input[type="url"]::placeholder {
   border: 1px dashed #ddd;
 }
 
+/* Overlap summary styles */
+.overlap-summary {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+}
+
+.overlap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.overlap-header h3 {
+  margin: 4px 0;
+  font-size: 24px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+}
+
+.muted {
+  color: #666;
+  margin: 4px 0 0 0;
+}
+
+.overlap-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.overlap-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.overlap-card.highlight {
+  background: #f1f7ff;
+  border-color: #b3d4ff;
+}
+
+.overlap-card .label {
+  font-size: 12px;
+  color: #555;
+  margin: 0 0 6px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.overlap-card h4 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.overlap-table {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.overlap-table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #eee;
+}
+
+.overlap-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.overlap-table th,
+.overlap-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.overlap-table tr:last-child td {
+  border-bottom: none;
+}
+
 /* Minimal DataTables styling - only essential overrides */
 
 /* Override DataTables default table styling to match our theme */
