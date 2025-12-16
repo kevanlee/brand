@@ -28,65 +28,72 @@
 </div>
 
 <div id="content" class="getting-started">
-  <div class="upload-customer-list">
+  <div class="upload-customer-list simple-upload">
     <h2>Getting started ...</h2>
-    <h3>Let's connect to your customer data.</h3>
-    <p>We can pull from any of the following revenue sources. Choose one or more to begin.</p>
-    <form id="revenue-connect-form">
-      <div class="audience-connect">
-        <div class="audience-oauth">
-          <h4>Connect to your revenue sources:</h4>
-          <button type="button" class="connect-btn secondary" data-platform="Salesforce">Connect to Salesforce →</button>
-          <button type="button" class="connect-btn secondary" data-platform="Shopify">Connect to Shopify →</button>
-          <button type="button" class="connect-btn secondary" data-platform="HubSpot">Connect to HubSpot →</button>
-        </div>
-        <div class="audience-csv">
-          <h4>Or upload a CSV:</h4>
-          <div class="csv-drop-zone" id="csv-drop-zone">
-            <div class="drop-zone-content">
-              <p>Drag and drop your CSV file here</p>
-              <p>or <span class="click-to-browse">click to browse</span></p>
-            </div>
-            <input type="file" id="csv-file-input" style="display: none;">
-            <div class="file-info" id="file-info" style="display: none;"></div>
-          </div>
-        </div>
+    <p>Let's connect to your customer data (.csv)</p>
+    <form id="revenue-connect-form" class="upload-form">
+      <button type="button" class="primary-upload" id="revenue-upload-btn">Upload your customer data (.csv)</button>
+
+      <div class="csv-drop-zone minimal" id="revenue-drop-zone">
+        <p>Drag-and-drop</p>
       </div>
-      
-      <div class="form-actions">
-          <button type="submit" id="continue-btn" class="continue-btn">Continue →</button>
-        <a href="#" id="skip-btn" class="skip-link">Skip for now</a>
-      </div>
-      
-      <div id="action-error" class="error-message" style="display: none;">
-        Please connect to at least one revenue source or upload a CSV file to continue.
-      </div>
+      <input type="file" id="revenue-file-input" accept=".csv" style="display: none;">
+      <div class="file-info" id="revenue-file-info" style="display: none;"></div>
+
+      <a href="#" id="revenue-skip" class="skip-link">(Skip for now.)</a>
+      <button type="submit" id="revenue-continue" class="continue-btn">Continue →</button>
+      <div id="revenue-error" class="error-message" style="display: none;">Please add a customer CSV or skip for now.</div>
     </form>
+  </div>
+</div>
 
-
-
-
+<div id="mapping-modal" class="mapping-modal" style="display: none;">
+  <div class="mapping-content">
+    <div class="mapping-header">
+      <h3>Tell us what's what ...</h3>
+      <button class="mapping-close" aria-label="Close mapping dialog">×</button>
+    </div>
+    <p class="mapping-subhead">Map the fields from your CSV to the fields in your new database.</p>
+    <div class="mapping-grid">
+      <div class="mapping-column">
+        <h4>New Database</h4>
+        <div class="mapping-row">Email</div>
+        <div class="mapping-row">Name</div>
+        <div class="mapping-row">Company</div>
+        <div class="mapping-row">Custom ...</div>
+      </div>
+      <div class="mapping-column">
+        <h4>Your CSV upload</h4>
+        <select class="mapping-select">
+          <option>Email address</option>
+          <option>Work email</option>
+          <option>Personal email</option>
+        </select>
+        <select class="mapping-select">
+          <option>First name</option>
+          <option>Full name</option>
+          <option>Preferred name</option>
+        </select>
+        <select class="mapping-select">
+          <option>Company</option>
+          <option>Employer</option>
+          <option>Organization</option>
+        </select>
+        <select class="mapping-select">
+          <option>Custom</option>
+          <option>ARR</option>
+          <option>Member since</option>
+        </select>
+      </div>
+    </div>
+    <div class="mapping-footer">
+      <button type="button" class="secondary mapping-cancel">Cancel</button>
+      <button type="button" class="continue-btn mapping-save">Save mapping →</button>
+    </div>
   </div>
 </div>
 
 <div id="footer">
-</div>
-
-<!-- Modal for connection confirmation -->
-<div id="connection-modal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3 id="modal-title">Connect to Platform</h3>
-      <span class="modal-close">&times;</span>
-    </div>
-    <div class="modal-body">
-      <p id="modal-message">Are you sure you want to connect to this platform?</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="secondary modal-cancel">Cancel</button>
-      <button type="button" class="modal-confirm">Confirm Connection</button>
-    </div>
-  </div>
 </div>
 
 <script src="main.js"></script>
