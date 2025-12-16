@@ -706,70 +706,78 @@ function initializeOverlapDashboard() {
 
 // DataTables initialization
 function initializeDataTables() {
-    // Check if we're on the dashboard page and DataTables is available
-    const customersTable = document.getElementById('customers-table');
-    if (!customersTable || typeof $ === 'undefined' || typeof $.fn.DataTable === 'undefined') {
+    // Ensure DataTables is available
+    if (typeof $ === 'undefined' || typeof $.fn.DataTable === 'undefined') {
         return;
     }
-    
-    // Initialize DataTable with AJAX data source - minimal styling
-    const table = $('#customers-table').DataTable({
-        ajax: {
-            url: 'data/customers.json',
-            dataSrc: 'data'
-        },
-        columns: [
-            { 
-                data: 'initials',
-                render: function(data, type, row) {
-                    return '<span class="initials-avatar">' + data + '</span>';
-                }
-            },
-            { data: 'name' },
-            { data: 'about' },
-            { 
-                data: 'tag',
-                render: function(data, type, row) {
-                    return '<span class="tag-pill ' + row.tag_type + '">' + data + '</span>';
-                }
-            },
-            { data: 'following' },
-            { data: 'start_date' },
-            { 
-                data: 'active_score',
-                render: function(data, type, row) {
-                    let stars = '';
-                    for (let i = 1; i <= 5; i++) {
-                        const filled = i <= data ? 'filled' : '';
-                        stars += '<span class="star ' + filled + '">★</span>';
-                    }
-                    return '<div class="star-rating">' + stars + '</div>';
-                }
-            },
-            { data: 'influence' }
-        ],
-        // Hide DataTables controls for clean look
-        dom: 'rt', // Only show table and processing
-        paging: false, // No pagination
-        searching: false, // No search box
-        info: false, // No info text
-        lengthChange: false, // No length menu
-        ordering: false, // No sorting functionality
-        responsive: true,
-        columnDefs: [
-            {
-                targets: [0, 4, 7], // #, Following, Influence columns
-                className: 'dt-body-center'
-            }
-        ]
-    });
-    
-    // Add click handler for table rows to show customer modal
-    $('#customers-table tbody').on('click', 'tr', function() {
-        const data = table.row(this).data();
-        if (data) {
-            showCustomerModal(data);
+
+    const tableConfigs = [
+        { selector: '#overview-table', dataUrl: 'data/customers.json' },
+        { selector: '#customers-table', dataUrl: 'data/customers.json' }
+    ];
+
+    tableConfigs.forEach(config => {
+        const tableElement = document.querySelector(config.selector);
+        if (!tableElement) {
+            return;
         }
+
+        const dataTable = $(config.selector).DataTable({
+            ajax: {
+                url: config.dataUrl,
+                dataSrc: 'data'
+            },
+            columns: [
+                {
+                    data: 'initials',
+                    render: function(data) {
+                        return '<span class="initials-avatar">' + data + '</span>';
+                    }
+                },
+                { data: 'name' },
+                { data: 'about' },
+                {
+                    data: 'tag',
+                    render: function(data, type, row) {
+                        return '<span class="tag-pill ' + row.tag_type + '">' + data + '</span>';
+                    }
+                },
+                { data: 'following' },
+                { data: 'start_date' },
+                {
+                    data: 'active_score',
+                    render: function(data) {
+                        let stars = '';
+                        for (let i = 1; i <= 5; i++) {
+                            const filled = i <= data ? 'filled' : '';
+                            stars += '<span class="star ' + filled + '">★</span>';
+                        }
+                        return '<div class="star-rating">' + stars + '</div>';
+                    }
+                },
+                { data: 'influence' }
+            ],
+            dom: 'rt',
+            paging: false,
+            searching: false,
+            info: false,
+            lengthChange: false,
+            ordering: false,
+            responsive: true,
+            columnDefs: [
+                {
+                    targets: [0, 4, 7],
+                    className: 'dt-body-center'
+                }
+            ]
+        });
+
+        $(config.selector + ' tbody').on('click', 'tr', function() {
+            const data = dataTable.row(this).data();
+            if (data) {
+                showCustomerModal(data);
+            }
+        });
     });
 }
 
