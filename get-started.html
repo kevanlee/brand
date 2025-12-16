@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand software</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">  
+</head>
+
+<body>
+
+<div id="menu">  
+  <div class="left">
+    <a href="/"><logo id="logo"></logo></a>
+    <nav>
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Pricing</a></li>
+    </ul>
+    </nav>
+  </div>
+  <div class="right">
+    <button id="login">Log In</button>
+  </div>
+</div>
+
+<div id="content" class="getting-started">
+  <div class="header">
+    <h2>Getting started ...</h2>
+    <form id="getting-started-form">
+      <p>What is your homepage URL?</p>
+      <input type="url" id="homepage-url" placeholder="yourwebsite.com" required>
+      <div id="url-error" class="error-message" style="display: none; color: #ff4444; font-size: 16px; margin-top: 5px;">
+        Please enter your homepage URL to continue.
+      </div>
+      <p>Which category most closely relates to your business?</p>
+      <div class="categories">
+        <input type="radio" id="category-1" name="category" value="E-commerce">
+        <label for="category-1" class="category-option">E-commerce</label>
+        
+        <input type="radio" id="category-2" name="category" value="HR tech">
+        <label for="category-2" class="category-option">HR tech</label>
+        
+        <input type="radio" id="category-3" name="category" value="Marketing tech">
+        <label for="category-3" class="category-option">Marketing tech</label>
+        
+        <input type="radio" id="category-4" name="category" value="Sales and CRM">
+        <label for="category-4" class="category-option">Sales and CRM</label>
+        
+        <input type="radio" id="category-5" name="category" value="Security & IT">
+        <label for="category-5" class="category-option">Security & IT</label>
+        
+        <input type="radio" id="category-6" name="category" value="AI notetaking">
+        <label for="category-6" class="category-option">AI notetaking</label>
+        
+        <input type="radio" id="category-7" name="category" value="Other">
+        <label for="category-7" class="category-option">Other ...</label>
+      </div>
+      <button id="start">Continue →</button>
+    </form>
+  </div>
+</div>
+
+<div id="footer">
+</div>
+
+<script src="main.js"></script>
+</body>

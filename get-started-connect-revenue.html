@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand software</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">  
+</head>
+
+<body>
+
+<div id="menu">  
+  <div class="left">
+    <a href="/"><logo id="logo"></logo></a>
+    <nav>
+    <ul>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Pricing</a></li>
+    </ul>
+    </nav>
+  </div>
+  <div class="right">
+    <button id="login">Log In</button>
+  </div>
+</div>
+
+<div id="content" class="getting-started">
+  <div class="upload-customer-list">
+    <h2>Getting started ...</h2>
+    <h3>Let's connect to your customer data.</h3>
+    <p>We can pull from any of the following revenue sources. Choose one or more to begin.</p>
+    <form id="revenue-connect-form">
+      <div class="audience-connect">
+        <div class="audience-oauth">
+          <h4>Connect to your revenue sources:</h4>
+          <button type="button" class="connect-btn secondary" data-platform="Salesforce">Connect to Salesforce →</button>
+          <button type="button" class="connect-btn secondary" data-platform="Shopify">Connect to Shopify →</button>
+          <button type="button" class="connect-btn secondary" data-platform="HubSpot">Connect to HubSpot →</button>
+        </div>
+        <div class="audience-csv">
+          <h4>Or upload a CSV:</h4>
+          <div class="csv-drop-zone" id="csv-drop-zone">
+            <div class="drop-zone-content">
+              <p>Drag and drop your CSV file here</p>
+              <p>or <span class="click-to-browse">click to browse</span></p>
+            </div>
+            <input type="file" id="csv-file-input" style="display: none;">
+            <div class="file-info" id="file-info" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+          <button type="submit" id="continue-btn" class="continue-btn">Continue →</button>
+        <a href="#" id="skip-btn" class="skip-link">Skip for now</a>
+      </div>
+      
+      <div id="action-error" class="error-message" style="display: none;">
+        Please connect to at least one revenue source or upload a CSV file to continue.
+      </div>
+    </form>
+
+
+
+
+  </div>
+</div>
+
+<div id="footer">
+</div>
+
+<!-- Modal for connection confirmation -->
+<div id="connection-modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modal-title">Connect to Platform</h3>
+      <span class="modal-close">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p id="modal-message">Are you sure you want to connect to this platform?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="secondary modal-cancel">Cancel</button>
+      <button type="button" class="modal-confirm">Confirm Connection</button>
+    </div>
+  </div>
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
