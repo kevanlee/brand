@@ -140,380 +140,283 @@ function showNotification(message, type = 'info') {
 function initializeGettingStartedForm() {
     const form = document.getElementById('getting-started-form');
     const continueButton = document.getElementById('start');
-    const urlInput = document.getElementById('homepage-url');
-    const errorMessage = document.getElementById('url-error');
-    
-    if (form && continueButton) {
-        continueButton.addEventListener('click', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            
-            // Clear any previous error messages
-            errorMessage.style.display = 'none';
-            urlInput.style.borderColor = '';
-            
-            // Clear category error styling
-            const categoriesDiv = document.querySelector('.categories');
-            if (categoriesDiv) {
-                categoriesDiv.classList.remove('error');
-            }
-            
-            // Get the URL value and trim whitespace
-            const urlValue = urlInput.value.trim();
-            
-            // Validate URL field
-            if (!urlValue) {
-                // Show error message
-                errorMessage.style.display = 'block';
-                urlInput.style.borderColor = '#ff4444';
-                urlInput.focus();
-                return;
-            }
-            
-            // Basic URL validation
-            try {
-                new URL(urlValue.startsWith('http') ? urlValue : 'https://' + urlValue);
-            } catch (error) {
-                errorMessage.textContent = 'Please enter a valid URL (e.g., yourwebsite.com)';
-                errorMessage.style.display = 'block';
-                urlInput.style.borderColor = '#ff4444';
-                urlInput.focus();
-                return;
-            }
-            
-            // Get selected category
-            const selectedCategory = document.querySelector('input[name="category"]:checked');
-            
-            // Validate category selection
-            if (!selectedCategory) {
-                // Show error message for category
-                errorMessage.textContent = 'Please select a category that relates to your business.';
-                errorMessage.style.display = 'block';
-                
-                // Add error styling to categories section
-                if (categoriesDiv) {
-                    categoriesDiv.classList.add('error');
-                }
-                
-                // Focus on the first category option
-                const firstCategory = document.querySelector('.category-option');
-                if (firstCategory) {
-                    firstCategory.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-                return;
-            }
-            
-            const categoryValue = selectedCategory.value;
-            
-            // Store form data (you could also send this to a server)
-            const formData = {
-                url: urlValue,
-                category: categoryValue
-            };
-            
-            console.log('Form submitted successfully:', formData);
-            
-            // Navigate to the next page
-            window.location.href = 'get-started-connect.html';
-        });
+    const emailInput = document.getElementById('work-email');
+    const emailError = document.getElementById('email-error');
+    const typeButtons = document.querySelectorAll('.business-type');
+    const typeError = document.getElementById('type-error');
+    let selectedType = null;
+
+    if (!form || !continueButton) {
+        return;
     }
+
+    typeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            typeButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            selectedType = this.dataset.type;
+            typeError.style.display = 'none';
+        });
+    });
+
+    continueButton.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        emailError.style.display = 'none';
+        typeError.style.display = 'none';
+        emailInput.style.borderColor = '#d9d9d9';
+
+        const emailValue = emailInput.value.trim();
+        const emailValid = emailValue && /.+@.+\..+/.test(emailValue);
+
+        if (!emailValid) {
+            emailError.style.display = 'block';
+            emailInput.style.borderColor = '#ff4444';
+            emailInput.focus();
+            return;
+        }
+
+        if (!selectedType) {
+            typeError.style.display = 'block';
+            return;
+        }
+
+        const formData = {
+            email: emailValue,
+            businessType: selectedType
+        };
+
+        console.log('Account form submitted:', formData);
+        window.location.href = 'get-started-connect.html';
+    });
 }
 
 // Audience Connect functionality
 function initializeAudienceConnect() {
     const form = document.getElementById('audience-connect-form');
-    const connectButtons = document.querySelectorAll('.connect-btn');
-    const csvDropZone = document.getElementById('csv-drop-zone');
-    const csvFileInput = document.getElementById('csv-file-input');
-    const fileInfo = document.getElementById('file-info');
-    const modal = document.getElementById('connection-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
-    const modalClose = document.querySelector('.modal-close');
-    const modalCancel = document.querySelector('.modal-cancel');
-    const modalConfirm = document.querySelector('.modal-confirm');
-    const skipBtn = document.getElementById('skip-btn');
-    const continueBtn = document.getElementById('continue-btn');
-    const actionError = document.getElementById('action-error');
-    
-    // Exit early if we're not on the audience connect page
+    const uploadBtn = document.getElementById('audience-upload-btn');
+    const dropZone = document.getElementById('audience-drop-zone');
+    const fileInput = document.getElementById('audience-file-input');
+    const fileInfo = document.getElementById('audience-file-info');
+    const skipLink = document.getElementById('audience-skip');
+    const errorBox = document.getElementById('audience-error');
+    const mappingModal = document.getElementById('mapping-modal');
+    const mappingClose = mappingModal ? mappingModal.querySelector('.mapping-close') : null;
+    const mappingCancel = mappingModal ? mappingModal.querySelector('.mapping-cancel') : null;
+    const mappingSave = mappingModal ? mappingModal.querySelector('.mapping-save') : null;
+    let hasFile = false;
+    let mappingConfirmed = false;
+
     if (!form) {
         return;
     }
-    
-    let currentPlatform = null;
-    let hasConnectedChannel = false;
-    let hasUploadedFile = false;
-    
-    // Initialize connect buttons
-    connectButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const platform = this.getAttribute('data-platform');
-            currentPlatform = platform;
-            
-            modalTitle.textContent = `Connect to ${platform}`;
-            modalMessage.textContent = `Are you sure you want to connect to ${platform}? This will allow us to pull your audience data.`;
-            modal.style.display = 'flex';
-        });
-    });
-    
-    // Modal functionality
-    modalConfirm.addEventListener('click', function() {
-        if (currentPlatform) {
-            const button = document.querySelector(`[data-platform="${currentPlatform}"]`);
-            button.classList.add('completed');
-            button.textContent = `Connected to ${currentPlatform} ✓`;
-            hasConnectedChannel = true;
-            clearError();
-        }
-        modal.style.display = 'none';
-    });
-    
-    modalClose.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
-    
-    modalCancel.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-    
-    // CSV Drag and Drop functionality
-    if (csvDropZone && csvFileInput) {
-        // Click to browse
-        csvDropZone.addEventListener('click', function() {
-            csvFileInput.click();
-        });
-        
-        // File input change
-        csvFileInput.addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                handleFileUpload(e.target.files[0]);
-            }
-        });
-        
-        // Drag and drop
-        csvDropZone.addEventListener('dragover', function(e) {
+
+    const openFilePicker = () => fileInput && fileInput.click();
+
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', openFilePicker);
+    }
+
+    if (dropZone && fileInput) {
+        dropZone.addEventListener('click', openFilePicker);
+        dropZone.addEventListener('dragover', e => {
             e.preventDefault();
-            csvDropZone.classList.add('drag-over');
+            dropZone.classList.add('drag-over');
         });
-        
-        csvDropZone.addEventListener('dragleave', function(e) {
+        dropZone.addEventListener('dragleave', e => {
             e.preventDefault();
-            csvDropZone.classList.remove('drag-over');
+            dropZone.classList.remove('drag-over');
         });
-        
-        csvDropZone.addEventListener('drop', function(e) {
+        dropZone.addEventListener('drop', e => {
             e.preventDefault();
-            csvDropZone.classList.remove('drag-over');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type === 'text/csv') {
-                handleFileUpload(files[0]);
-            } else {
-                showNotification('Please upload a CSV file.', 'error');
-            }
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFileUpload(file);
         });
     }
-    
+
+    if (fileInput) {
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) handleFileUpload(file);
+        });
+    }
+
     function handleFileUpload(file) {
-        hasUploadedFile = true;
-        csvDropZone.classList.add('has-file');
-        
-        fileInfo.innerHTML = `
-            <p><strong>📄 ${file.name}</strong></p>
-            <p>Size: ${(file.size / 1024).toFixed(1)} KB</p>
-            <p>Type: CSV file</p>
-        `;
+        hasFile = true;
+        mappingConfirmed = false;
+        dropZone.classList.add('has-file');
         fileInfo.style.display = 'block';
-        
-        clearError();
-        showNotification('CSV file uploaded successfully!', 'success');
+        fileInfo.innerHTML = `<p><strong>${file.name}</strong></p><p>${(file.size / 1024).toFixed(1)} KB</p>`;
+        errorBox.style.display = 'none';
+        openMappingModal();
     }
-    
-    // Skip button functionality
-    if (skipBtn) {
-        skipBtn.addEventListener('click', function() {
-            // Navigate to next page or dashboard
-            window.location.href = 'dashboard-customer-table.html';
+
+    function openMappingModal() {
+        if (!mappingModal) return;
+        mappingModal.style.display = 'flex';
+    }
+
+    function closeMappingModal() {
+        if (!mappingModal) return;
+        mappingModal.style.display = 'none';
+    }
+
+    if (mappingClose) {
+        mappingClose.addEventListener('click', closeMappingModal);
+    }
+    if (mappingCancel) {
+        mappingCancel.addEventListener('click', () => {
+            mappingConfirmed = false;
+            closeMappingModal();
         });
     }
-    
-    // Form submission validation
-    if (form) {
-        form.addEventListener('submit', function(e) {
+    if (mappingSave) {
+        mappingSave.addEventListener('click', () => {
+            mappingConfirmed = true;
+            closeMappingModal();
+        });
+    }
+
+    if (skipLink) {
+        skipLink.addEventListener('click', e => {
             e.preventDefault();
-            
-            if (!hasConnectedChannel && !hasUploadedFile) {
-                actionError.style.display = 'block';
-                actionError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-            
-            // Form is valid, proceed to revenue connect page
-            console.log('Audience connect form submitted successfully');
-            // Navigate to revenue connect page
             window.location.href = 'get-started-connect-revenue.html';
         });
     }
-    
-    function clearError() {
-        actionError.style.display = 'none';
-    }
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!hasFile) {
+            errorBox.textContent = 'Please add an audience CSV or skip for now.';
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (!mappingConfirmed) {
+            errorBox.textContent = 'Please save your field mapping to continue.';
+            errorBox.style.display = 'block';
+            openMappingModal();
+            return;
+        }
+
+        window.location.href = 'get-started-connect-revenue.html';
+    });
 }
 
 // Revenue Connect functionality (similar to audience connect but for revenue sources)
 function initializeRevenueConnect() {
     const form = document.getElementById('revenue-connect-form');
-    const connectButtons = document.querySelectorAll('.connect-btn');
-    const csvDropZone = document.getElementById('csv-drop-zone');
-    const csvFileInput = document.getElementById('csv-file-input');
-    const fileInfo = document.getElementById('file-info');
-    const modal = document.getElementById('connection-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalMessage = document.getElementById('modal-message');
-    const modalClose = document.querySelector('.modal-close');
-    const modalCancel = document.querySelector('.modal-cancel');
-    const modalConfirm = document.querySelector('.modal-confirm');
-    const skipBtn = document.getElementById('skip-btn');
-    const continueBtn = document.getElementById('continue-btn');
-    const actionError = document.getElementById('action-error');
-    
-    // Exit early if we're not on the revenue connect page
+    const uploadBtn = document.getElementById('revenue-upload-btn');
+    const dropZone = document.getElementById('revenue-drop-zone');
+    const fileInput = document.getElementById('revenue-file-input');
+    const fileInfo = document.getElementById('revenue-file-info');
+    const skipLink = document.getElementById('revenue-skip');
+    const errorBox = document.getElementById('revenue-error');
+    const mappingModal = document.getElementById('mapping-modal');
+    const mappingClose = mappingModal ? mappingModal.querySelector('.mapping-close') : null;
+    const mappingCancel = mappingModal ? mappingModal.querySelector('.mapping-cancel') : null;
+    const mappingSave = mappingModal ? mappingModal.querySelector('.mapping-save') : null;
+    let hasFile = false;
+    let mappingConfirmed = false;
+
     if (!form) {
         return;
     }
-    
-    let currentPlatform = null;
-    let hasConnectedChannel = false;
-    let hasUploadedFile = false;
-    
-    // Initialize connect buttons
-    connectButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const platform = this.getAttribute('data-platform');
-            currentPlatform = platform;
-            
-            modalTitle.textContent = `Connect to ${platform}`;
-            modalMessage.textContent = `Are you sure you want to connect to ${platform}? This will allow us to pull your customer data.`;
-            modal.style.display = 'flex';
+
+    const openFilePicker = () => fileInput && fileInput.click();
+
+    if (uploadBtn) {
+        uploadBtn.addEventListener('click', openFilePicker);
+    }
+
+    if (dropZone && fileInput) {
+        dropZone.addEventListener('click', openFilePicker);
+        dropZone.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
         });
-    });
-    
-    // Modal functionality
-    if (modalConfirm) {
-        modalConfirm.addEventListener('click', function() {
-            if (currentPlatform) {
-                const button = document.querySelector(`[data-platform="${currentPlatform}"]`);
-                button.classList.add('completed');
-                button.textContent = `Connected to ${currentPlatform} ✓`;
-                hasConnectedChannel = true;
-                clearError();
-            }
-            modal.style.display = 'none';
+        dropZone.addEventListener('dragleave', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+        });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) handleFileUpload(file);
         });
     }
-    
-    if (modalClose) {
-        modalClose.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-    }
-    
-    if (modalCancel) {
-        modalCancel.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-    }
-    
-    // CSV file upload functionality
-    if (csvDropZone && csvFileInput) {
-        csvDropZone.addEventListener('click', function() {
-            csvFileInput.click();
-        });
-        
-        csvFileInput.addEventListener('change', function(e) {
+
+    if (fileInput) {
+        fileInput.addEventListener('change', e => {
             const file = e.target.files[0];
-            if (file) {
-                hasUploadedFile = true;
-                clearError();
-                showFileInfo(file);
-            }
-        });
-        
-        // Drag and drop functionality
-        csvDropZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            csvDropZone.classList.add('drag-over');
-        });
-        
-        csvDropZone.addEventListener('dragleave', function(e) {
-            e.preventDefault();
-            csvDropZone.classList.remove('drag-over');
-        });
-        
-        csvDropZone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            csvDropZone.classList.remove('drag-over');
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                const file = files[0];
-                hasUploadedFile = true;
-                clearError();
-                showFileInfo(file);
-            }
+            if (file) handleFileUpload(file);
         });
     }
-    
-    function showFileInfo(file) {
-        if (fileInfo) {
-            fileInfo.style.display = 'block';
-            fileInfo.innerHTML = `
-                <p><strong>File selected:</strong> ${file.name}</p>
-                <p><strong>Size:</strong> ${(file.size / 1024).toFixed(1)} KB</p>
-                <p><strong>Type:</strong> ${file.type || 'Unknown'}</p>
-            `;
-            csvDropZone.classList.add('has-file');
-        }
+
+    function handleFileUpload(file) {
+        hasFile = true;
+        mappingConfirmed = false;
+        dropZone.classList.add('has-file');
+        fileInfo.style.display = 'block';
+        fileInfo.innerHTML = `<p><strong>${file.name}</strong></p><p>${(file.size / 1024).toFixed(1)} KB</p>`;
+        errorBox.style.display = 'none';
+        openMappingModal();
     }
-    
-    // Skip button functionality
-    if (skipBtn) {
-        skipBtn.addEventListener('click', function() {
-            // Navigate to loading page
+
+    function openMappingModal() {
+        if (!mappingModal) return;
+        mappingModal.style.display = 'flex';
+    }
+
+    function closeMappingModal() {
+        if (!mappingModal) return;
+        mappingModal.style.display = 'none';
+    }
+
+    if (mappingClose) {
+        mappingClose.addEventListener('click', closeMappingModal);
+    }
+    if (mappingCancel) {
+        mappingCancel.addEventListener('click', () => {
+            mappingConfirmed = false;
+            closeMappingModal();
+        });
+    }
+    if (mappingSave) {
+        mappingSave.addEventListener('click', () => {
+            mappingConfirmed = true;
+            closeMappingModal();
+        });
+    }
+
+    if (skipLink) {
+        skipLink.addEventListener('click', e => {
+            e.preventDefault();
             window.location.href = 'loading.html';
         });
     }
-    
-    // Form submission validation
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!hasConnectedChannel && !hasUploadedFile) {
-                actionError.style.display = 'block';
-                actionError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-            
-            // Form is valid, proceed to loading page
-            console.log('Revenue connect form submitted successfully');
-            // Navigate to loading screen
-            window.location.href = 'loading.html';
-        });
-    }
-    
-    function clearError() {
-        if (actionError) {
-            actionError.style.display = 'none';
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!hasFile) {
+            errorBox.textContent = 'Please add a customer CSV or skip for now.';
+            errorBox.style.display = 'block';
+            return;
         }
-    }
+
+        if (!mappingConfirmed) {
+            errorBox.textContent = 'Please save your field mapping to continue.';
+            errorBox.style.display = 'block';
+            openMappingModal();
+            return;
+        }
+
+        window.location.href = 'loading.html';
+    });
 }
 
 // Loading screen functionality

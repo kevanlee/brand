@@ -29,37 +29,21 @@
 
 <div id="content" class="getting-started">
   <div class="header">
-    <h2>Getting started ...</h2>
-    <form id="getting-started-form">
-      <p>What is your homepage URL?</p>
-      <input type="url" id="homepage-url" placeholder="yourwebsite.com" required>
-      <div id="url-error" class="error-message" style="display: none; color: #ff4444; font-size: 16px; margin-top: 5px;">
-        Please enter your homepage URL to continue.
+    <h2>Create your account ...</h2>
+    <form id="getting-started-form" class="account-form">
+      <label for="work-email">What is your work email?</label>
+      <input type="email" id="work-email" placeholder="Your work email ..." required>
+      <div id="email-error" class="error-message" style="display: none;">Please enter a valid work email to continue.</div>
+
+      <p>What type of business do you have?</p>
+      <div class="business-type-options" role="group" aria-label="Business type">
+        <button type="button" class="business-type" data-type="people">We sell to people</button>
+        <button type="button" class="business-type" data-type="business">We sell to businesses</button>
+        <button type="button" class="business-type" data-type="both">Both</button>
       </div>
-      <p>Which category most closely relates to your business?</p>
-      <div class="categories">
-        <input type="radio" id="category-1" name="category" value="E-commerce">
-        <label for="category-1" class="category-option">E-commerce</label>
-        
-        <input type="radio" id="category-2" name="category" value="HR tech">
-        <label for="category-2" class="category-option">HR tech</label>
-        
-        <input type="radio" id="category-3" name="category" value="Marketing tech">
-        <label for="category-3" class="category-option">Marketing tech</label>
-        
-        <input type="radio" id="category-4" name="category" value="Sales and CRM">
-        <label for="category-4" class="category-option">Sales and CRM</label>
-        
-        <input type="radio" id="category-5" name="category" value="Security & IT">
-        <label for="category-5" class="category-option">Security & IT</label>
-        
-        <input type="radio" id="category-6" name="category" value="AI notetaking">
-        <label for="category-6" class="category-option">AI notetaking</label>
-        
-        <input type="radio" id="category-7" name="category" value="Other">
-        <label for="category-7" class="category-option">Other ...</label>
-      </div>
-      <button id="start">Continue →</button>
+      <div id="type-error" class="error-message" style="display: none;">Please pick a business type.</div>
+
+      <button id="start">Next →</button>
     </form>
   </div>
 </div>
@@ -69,3 +53,4 @@
 
 <script src="main.js"></script>
 </body>
+</html>
