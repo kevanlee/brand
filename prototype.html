@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brand - Audience to Revenue Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="prototype.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo">Brand</div>
+      <nav class="site-nav">
+        <a href="#landing">Overview</a>
+        <a href="#upload">Upload</a>
+        <a href="#label">Label</a>
+        <a href="#dashboard">Dashboard</a>
+      </nav>
+      <button class="ghost-button" data-step="upload">Start now</button>
+    </header>
+
+    <main>
+      <section id="landing" class="section hero">
+        <div class="hero-content">
+          <span class="pill">Prototype</span>
+          <h1>Connect your audience to revenue in one unified view.</h1>
+          <p>
+            Upload your newsletter audience and CRM exports, map the fields, and
+            instantly see how community members drive pipeline, revenue, and
+            conversion.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-button" data-step="upload">Build your database</button>
+            <button class="secondary-button" data-step="dashboard">See sample dashboard</button>
+          </div>
+          <div class="hero-metrics">
+            <div>
+              <h3>3 min</h3>
+              <p>Average setup time</p>
+            </div>
+            <div>
+              <h3>2×</h3>
+              <p>More pipeline from engaged readers</p>
+            </div>
+            <div>
+              <h3>48%</h3>
+              <p>Audience-to-customer overlap</p>
+            </div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2>How it works</h2>
+          <ol>
+            <li>Upload newsletter and CRM CSVs.</li>
+            <li>Label and map columns to core fields.</li>
+            <li>Review overlap, revenue, and pipeline insights.</li>
+          </ol>
+          <div class="card-highlight">
+            <p>“We uncovered $120k in pipeline from Substack readers alone.”</p>
+            <span>— Community Lead, Nimbus AI</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="upload" class="section">
+        <div class="section-header">
+          <h2>Upload your datasets</h2>
+          <p>
+            Bring in newsletter contacts and CRM revenue data. We’ll join on
+            email, domain, or company to build your shared database.
+          </p>
+        </div>
+        <div class="upload-grid">
+          <div class="upload-card">
+            <div class="upload-header">
+              <h3>Newsletter audience CSV</h3>
+              <span class="tag">Required</span>
+            </div>
+            <p>Export from Substack, Beehiiv, or ConvertKit.</p>
+            <label class="upload-box">
+              <input type="file" accept=".csv" />
+              <span>Drag & drop or <strong>browse</strong></span>
+              <small>Example: email, first name, last opened</small>
+            </label>
+            <button class="secondary-button" data-step="label">Continue to labeling</button>
+          </div>
+          <div class="upload-card">
+            <div class="upload-header">
+              <h3>CRM / revenue CSV</h3>
+              <span class="tag">Required</span>
+            </div>
+            <p>Upload from HubSpot, Salesforce, or Shopify.</p>
+            <label class="upload-box">
+              <input type="file" accept=".csv" />
+              <span>Drag & drop or <strong>browse</strong></span>
+              <small>Example: account, stage, ARR, last deal</small>
+            </label>
+            <button class="secondary-button" data-step="label">Continue to labeling</button>
+          </div>
+        </div>
+        <div class="upload-footer">
+          <div>
+            <h4>What happens next?</h4>
+            <p>We never overwrite your data. You can re-upload at any time.</p>
+          </div>
+          <button class="primary-button" data-step="label">Map my columns</button>
+        </div>
+      </section>
+
+      <section id="label" class="section">
+        <div class="section-header">
+          <h2>Label & map your columns</h2>
+          <p>
+            Choose how your newsletter and CRM columns align. We’ll merge your
+            data into a joint customer graph.
+          </p>
+        </div>
+        <div class="label-grid">
+          <div class="label-card">
+            <h3>Newsletter fields</h3>
+            <div class="field-row">
+              <span>Email address</span>
+              <select>
+                <option selected>Primary Email</option>
+                <option>Work Email</option>
+                <option>Alternate Email</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>Subscriber name</span>
+              <select>
+                <option selected>Contact Name</option>
+                <option>First + Last</option>
+                <option>Custom</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>Last opened</span>
+              <select>
+                <option selected>Engagement Date</option>
+                <option>Last Clicked</option>
+                <option>Inactive Date</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>UTM Source</span>
+              <select>
+                <option selected>Campaign Source</option>
+                <option>Channel</option>
+                <option>Ignore</option>
+              </select>
+            </div>
+          </div>
+          <div class="label-card">
+            <h3>CRM fields</h3>
+            <div class="field-row">
+              <span>Company / Account</span>
+              <select>
+                <option selected>Account Name</option>
+                <option>Company</option>
+                <option>Ignore</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>Deal stage</span>
+              <select>
+                <option selected>Pipeline Stage</option>
+                <option>Lifecycle Stage</option>
+                <option>Ignore</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>ARR / Revenue</span>
+              <select>
+                <option selected>Annual Revenue</option>
+                <option>Monthly Revenue</option>
+                <option>Ignore</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span>Last deal date</span>
+              <select>
+                <option selected>Close Date</option>
+                <option>Opportunity Date</option>
+                <option>Ignore</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="label-footer">
+          <div class="insight-box">
+            <h4>Matching logic</h4>
+            <p>
+              We’ll match by email first, then domain + company name, then name
+              similarity. You can adjust this later.
+            </p>
+          </div>
+          <button class="primary-button" data-step="dashboard">Build database</button>
+        </div>
+      </section>
+
+      <section id="dashboard" class="section">
+        <div class="section-header">
+          <h2>Unified database & dashboard</h2>
+          <p>
+            Your lists are merged into a single audience-to-revenue view. Filter
+            by stage, engagement, or source to prioritize outreach.
+          </p>
+        </div>
+        <div class="dashboard-grid">
+          <div class="metric-card">
+            <h3>Overlap rate</h3>
+            <p class="metric">46%</p>
+            <span>2,180 newsletter readers already in CRM</span>
+          </div>
+          <div class="metric-card">
+            <h3>Revenue influenced</h3>
+            <p class="metric">$1.42M</p>
+            <span>Pipeline touched by newsletter subscribers</span>
+          </div>
+          <div class="metric-card">
+            <h3>Top segment</h3>
+            <p class="metric">SaaS founders</p>
+            <span>34% higher close rate</span>
+          </div>
+        </div>
+        <div class="dashboard-layout">
+          <div class="table-card">
+            <div class="table-header">
+              <h3>Audience → Revenue matches</h3>
+              <button class="ghost-button">Export CSV</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Contact</th>
+                  <th>Company</th>
+                  <th>Stage</th>
+                  <th>ARR</th>
+                  <th>Engagement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Maya Patel</td>
+                  <td>Soluna Health</td>
+                  <td>Negotiation</td>
+                  <td>$82k</td>
+                  <td>5 opens • 2 clicks</td>
+                </tr>
+                <tr>
+                  <td>Jon Yi</td>
+                  <td>Quartz Labs</td>
+                  <td>Qualified</td>
+                  <td>$45k</td>
+                  <td>3 opens • 1 click</td>
+                </tr>
+                <tr>
+                  <td>Alex Rivera</td>
+                  <td>StageRun</td>
+                  <td>Customer</td>
+                  <td>$120k</td>
+                  <td>8 opens • 4 clicks</td>
+                </tr>
+                <tr>
+                  <td>Lena Roth</td>
+                  <td>Brightside AI</td>
+                  <td>Discovery</td>
+                  <td>$24k</td>
+                  <td>2 opens • 0 clicks</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="sidebar">
+            <div class="sidebar-card">
+              <h4>Pipeline by engagement</h4>
+              <ul>
+                <li><span>High engagement</span><strong>$620k</strong></li>
+                <li><span>Medium engagement</span><strong>$430k</strong></li>
+                <li><span>Low engagement</span><strong>$170k</strong></li>
+              </ul>
+            </div>
+            <div class="sidebar-card">
+              <h4>Recommended actions</h4>
+              <ul>
+                <li>Send a sales sequence to 312 warm subscribers.</li>
+                <li>Invite 54 high-ARR readers to a demo webinar.</li>
+                <li>Prioritize outreach to 18 enterprise prospects.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Brand prototype · Audience → Revenue intelligence</span>
+      <button class="ghost-button" data-step="upload">Restart flow</button>
+    </footer>
+
+    <script src="prototype.js"></script>
+  </body>
+</html>
