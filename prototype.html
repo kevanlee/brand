@@ -16,10 +16,10 @@
     <header class="site-header">
       <div class="logo">Brand</div>
       <nav class="site-nav">
-        <a href="#landing">Overview</a>
-        <a href="#upload">Upload</a>
-        <a href="#label">Label</a>
-        <a href="#dashboard">Dashboard</a>
+        <a href="#landing" class="nav-link" data-section="landing">Overview</a>
+        <a href="#upload" class="nav-link" data-section="upload">Upload</a>
+        <a href="#label" class="nav-link" data-section="label">Label</a>
+        <a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a>
       </nav>
       <button class="ghost-button" data-step="upload">Start now</button>
     </header>
@@ -82,10 +82,10 @@
               <span class="tag">Required</span>
             </div>
             <p>Export from Substack, Beehiiv, or ConvertKit.</p>
-            <label class="upload-box">
+            <label class="upload-box" data-upload="audience">
               <input type="file" accept=".csv" />
               <span>Drag & drop or <strong>browse</strong></span>
-              <small>Example: email, first name, last opened</small>
+              <small>Example: email, first name, engagement</small>
             </label>
             <button class="secondary-button" data-step="label">Continue to labeling</button>
           </div>
@@ -95,10 +95,10 @@
               <span class="tag">Required</span>
             </div>
             <p>Upload from HubSpot, Salesforce, or Shopify.</p>
-            <label class="upload-box">
+            <label class="upload-box" data-upload="crm">
               <input type="file" accept=".csv" />
               <span>Drag & drop or <strong>browse</strong></span>
-              <small>Example: account, stage, ARR, last deal</small>
+              <small>Example: account, stage, ACV, website</small>
             </label>
             <button class="secondary-button" data-step="label">Continue to labeling</button>
           </div>
@@ -136,13 +136,19 @@
               </select>
             </div>
             <div class="field-row">
-              <span>Last opened</span>
+              <span>
+                Engagement
+                <span class="info-icon" data-tooltip="Use opens, clicks, or recency columns to measure engagement.">i</span>
+              </span>
               <select data-source="audience" data-field="engagement">
                 <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
-              <span>UTM source</span>
+              <span>
+                UTM source
+                <span class="info-icon" data-tooltip="This helps attribute conversions back to your newsletter campaigns.">i</span>
+              </span>
               <select data-source="audience" data-field="source">
                 <option value="">Select column</option>
               </select>
@@ -157,7 +163,10 @@
               </select>
             </div>
             <div class="field-row">
-              <span>Company URL</span>
+              <span>
+                Company website
+                <span class="info-icon" data-tooltip="We match subscriber email domains to this company website domain.">i</span>
+              </span>
               <select data-source="crm" data-field="companyUrl">
                 <option value="">Select column</option>
               </select>
@@ -169,14 +178,11 @@
               </select>
             </div>
             <div class="field-row">
-              <span>ACV</span>
+              <span>
+                ACV
+                <span class="info-icon" data-tooltip="Annual contract value used to total revenue influenced.">i</span>
+              </span>
               <select data-source="crm" data-field="acv">
-                <option value="">Select column</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <span>Last deal date</span>
-              <select data-source="crm" data-field="closeDate">
                 <option value="">Select column</option>
               </select>
             </div>
@@ -186,8 +192,8 @@
           <div class="insight-box">
             <h4>Matching logic</h4>
             <p>
-              We’ll match by email first, then domain + company name, then name
-              similarity. You can adjust this later.
+              We’ll match subscriber email domains to CRM company website domains
+              to compute overlap and revenue influence.
             </p>
           </div>
           <button class="primary-button" id="build-database" data-step="dashboard">Build database</button>
@@ -214,9 +220,9 @@
             <span>Pipeline touched by newsletter subscribers</span>
           </div>
           <div class="metric-card">
-            <h3>Top company</h3>
-            <p class="metric" id="top-company">--</p>
-            <span id="top-company-detail">Awaiting audience data</span>
+            <h3>Top customer</h3>
+            <p class="metric" id="top-customer">--</p>
+            <span id="top-customer-detail">Awaiting audience data</span>
           </div>
         </div>
         <div class="dashboard-layout">
@@ -244,11 +250,11 @@
           </div>
           <div class="sidebar">
             <div class="sidebar-card">
-              <h4>Pipeline by engagement</h4>
-              <ul id="pipeline-by-engagement">
-                <li><span>High engagement</span><strong>--</strong></li>
-                <li><span>Medium engagement</span><strong>--</strong></li>
-                <li><span>Low engagement</span><strong>--</strong></li>
+              <h4>Revenue influenced by stage</h4>
+              <ul id="revenue-by-stage">
+                <li><span>Discovery</span><strong>--</strong></li>
+                <li><span>Qualified</span><strong>--</strong></li>
+                <li><span>Negotiation</span><strong>--</strong></li>
               </ul>
             </div>
             <div class="sidebar-card">

@@ -1,4 +1,5 @@
 const stepButtons = document.querySelectorAll("[data-step]");
+const navLinks = document.querySelectorAll(".nav-link");
 const buildButton = document.getElementById("build-database");
 const exportButton = document.getElementById("export-csv");
 const fileInputs = document.querySelectorAll(".upload-box input");
@@ -6,9 +7,9 @@ const matchBody = document.getElementById("matches-body");
 const overlapRate = document.getElementById("overlap-rate");
 const overlapCount = document.getElementById("overlap-count");
 const revenueInfluenced = document.getElementById("revenue-influenced");
-const topCompany = document.getElementById("top-company");
-const topCompanyDetail = document.getElementById("top-company-detail");
-const pipelineList = document.getElementById("pipeline-by-engagement");
+const topCustomer = document.getElementById("top-customer");
+const topCustomerDetail = document.getElementById("top-customer-detail");
+const revenueByStage = document.getElementById("revenue-by-stage");
 
 const state = {
   audienceRows: [],
@@ -18,6 +19,9 @@ const state = {
   matches: [],
   audienceMatchedCount: 0,
   companyRevenueTotal: 0,
+  matchedCompanyCount: 0,
+  crmCompanyCount: 0,
+  stageRevenueTotals: {},
 };
 
 stepButtons.forEach((button) => {
@@ -27,6 +31,12 @@ stepButtons.forEach((button) => {
     target.scrollIntoView({ behavior: "smooth" });
   });
 });
+
+const setActiveNav = (sectionId) => {
+  navLinks.forEach((link) => {
+    link.classList.toggle("active", link.dataset.section === sectionId);
+  });
+};
 
 const normalizeHeader = (value) => value.toLowerCase().replace(/\s+/g, " ").trim();
 
@@ -96,6 +106,12 @@ const updateUploadLabel = (input) => {
   if (small) {
     small.textContent = `Selected: ${fileName}`;
   }
+  label.classList.add("is-uploaded");
+  const cardButton = input.closest(".upload-card")?.querySelector(".secondary-button");
+  if (cardButton) {
+    cardButton.classList.add("is-active");
+    cardButton.textContent = "Uploaded ✓";
+  }
 };
 
 const setMappingOptions = (source, headers) => {
@@ -129,7 +145,6 @@ const guessDefault = (field, headers) => {
     companyUrl: ["website", "url", "domain", "company website", "company url"],
     stage: ["stage", "lifecycle", "pipeline"],
     acv: ["acv", "arr", "revenue", "amount", "deal value"],
-    closeDate: ["close", "closed", "won", "date"],
   };
 
   const targets = matches[field] ?? [];
@@ -185,9 +200,9 @@ const updateDashboard = () => {
     overlapRate.textContent = "--";
     overlapCount.textContent = "Upload data to see overlap";
     revenueInfluenced.textContent = "--";
-    topCompany.textContent = "--";
-    topCompanyDetail.textContent = "Awaiting audience data";
-    pipelineList.querySelectorAll("strong").forEach((node) => {
+    topCustomer.textContent = "--";
+    topCustomerDetail.textContent = "Awaiting audience data";
+    revenueByStage.querySelectorAll("strong").forEach((node) => {
       node.textContent = "--";
     });
     return;
@@ -206,13 +221,16 @@ const updateDashboard = () => {
     matchBody.appendChild(row);
   });
 
-  const overlap = state.audienceMatchedCount || 0;
-  const audienceTotal = state.audienceRows.length || 1;
-  overlapRate.textContent = `${Math.round((overlap / audienceTotal) * 100)}%`;
-  overlapCount.textContent = `${overlap.toLocaleString()} newsletter readers already in CRM`;
+  // Overlap rate: matched company domains / total CRM company domains.
+  const overlap = state.matchedCompanyCount || 0;
+  const totalCompanies = state.crmCompanyCount || 1;
+  overlapRate.textContent = `${Math.round((overlap / totalCompanies) * 100)}%`;
+  overlapCount.textContent = `${overlap.toLocaleString()} of ${totalCompanies.toLocaleString()} companies overlap`;
 
+  // Revenue influenced: sum of ACV for matched CRM company domains.
   revenueInfluenced.textContent = formatCurrency(state.companyRevenueTotal);
 
+  // Top customer: company name with the most matched subscribers.
   const topCompanyCounts = state.matches.reduce((acc, match) => {
     const key = match.company || "Unknown";
     acc[key] = (acc[key] ?? 0) + 1;
@@ -222,31 +240,17 @@ const updateDashboard = () => {
     (a, b) => b[1] - a[1]
   )[0];
 
-  topCompany.textContent = topCompanyName;
-  topCompanyDetail.textContent = `${topCompanyCount} subscribers in this company`;
+  topCustomer.textContent = topCompanyName;
+  topCustomerDetail.textContent = `${topCompanyCount} subscribers in this company`;
 
-  const buckets = {
-    High: 0,
-    Medium: 0,
-    Low: 0,
-  };
-
-  state.matches.forEach((match) => {
-    const engagement = String(match.engagement || "").toLowerCase();
-    let bucket = "Low";
-    if (engagement.includes("high") || engagement.includes("open") || engagement.includes("click")) {
-      bucket = "High";
-    } else if (engagement.includes("medium")) {
-      bucket = "Medium";
-    }
-    const numeric = Number(String(match.acv).replace(/[^\d.-]/g, ""));
-    buckets[bucket] += Number.isNaN(numeric) ? 0 : numeric;
-  });
-
-  const bucketValues = pipelineList.querySelectorAll("strong");
-  ["High", "Medium", "Low"].forEach((key, index) => {
-    if (bucketValues[index]) {
-      bucketValues[index].textContent = formatCurrency(buckets[key]);
+  // Revenue influenced by stage: sum ACV per lifecycle stage for matched companies.
+  const stageTotals = state.stageRevenueTotals;
+  revenueByStage.querySelectorAll("li").forEach((item) => {
+    const label = item.querySelector("span")?.textContent || "Unspecified";
+    const value = stageTotals[label] ?? 0;
+    const strong = item.querySelector("strong");
+    if (strong) {
+      strong.textContent = formatCurrency(value);
     }
   });
 };
@@ -254,6 +258,10 @@ const updateDashboard = () => {
 const buildMatches = () => {
   const mapping = getMapping();
   const audienceEmailField = mapping.audience.email;
+  state.stageRevenueTotals = {};
+  state.companyRevenueTotal = 0;
+  state.matchedCompanyCount = 0;
+  state.crmCompanyCount = 0;
   if (
     !audienceEmailField ||
     !mapping.crm.companyUrl ||
@@ -283,8 +291,12 @@ const buildMatches = () => {
   state.matches = [];
   const matchedDomains = new Set();
   const matchedCompanyRevenue = new Map();
+  const crmDomains = new Set();
   state.crmRows.forEach((row) => {
     const websiteDomain = normalizeWebsiteDomain(row[mapping.crm.companyUrl]);
+    if (websiteDomain) {
+      crmDomains.add(websiteDomain);
+    }
     if (!websiteDomain || !audienceDomainIndex.has(websiteDomain)) return;
     matchedDomains.add(websiteDomain);
     if (!matchedCompanyRevenue.has(websiteDomain)) {
@@ -292,6 +304,7 @@ const buildMatches = () => {
       matchedCompanyRevenue.set(websiteDomain, {
         company: row[mapping.crm.companyName],
         acv: revenueValue,
+        stage: row[mapping.crm.stage],
       });
     }
     const audienceEntries = audienceDomainIndex.get(websiteDomain);
@@ -314,10 +327,18 @@ const buildMatches = () => {
     return domain && matchedDomains.has(domain);
   }).length;
   state.audienceMatchedCount = audienceMatchedCount;
+  state.matchedCompanyCount = matchedDomains.size;
+  state.crmCompanyCount = crmDomains.size;
   state.companyRevenueTotal = Array.from(matchedCompanyRevenue.values()).reduce((sum, entry) => {
     const numeric = Number(String(entry.acv).replace(/[^\d.-]/g, ""));
     return sum + (Number.isNaN(numeric) ? 0 : numeric);
   }, 0);
+  state.stageRevenueTotals = Array.from(matchedCompanyRevenue.values()).reduce((acc, entry) => {
+    const key = entry.stage || "Unspecified";
+    const numeric = Number(String(entry.acv).replace(/[^\d.-]/g, ""));
+    acc[key] = (acc[key] ?? 0) + (Number.isNaN(numeric) ? 0 : numeric);
+    return acc;
+  }, {});
 
   updateDashboard();
 };
@@ -376,3 +397,19 @@ if (exportButton) {
 }
 
 updateDashboard();
+
+const sections = document.querySelectorAll("main section[id]");
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setActiveNav(entry.target.id);
+      }
+    });
+  },
+  { rootMargin: "-40% 0px -55% 0px" }
+);
+
+sections.forEach((section) => observer.observe(section));
+
+setActiveNav("landing");
