@@ -142,7 +142,7 @@
               </select>
             </div>
             <div class="field-row">
-              <span>UTM Source</span>
+              <span>UTM source</span>
               <select data-source="audience" data-field="source">
                 <option value="">Select column</option>
               </select>
@@ -151,20 +151,14 @@
           <div class="label-card">
             <h3>CRM fields</h3>
             <div class="field-row">
-              <span>Contact email</span>
-              <select data-source="crm" data-field="email">
+              <span>Company name</span>
+              <select data-source="crm" data-field="companyName">
                 <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
-              <span>Company / Account</span>
-              <select data-source="crm" data-field="company">
-                <option value="">Select column</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <span>Company website</span>
-              <select data-source="crm" data-field="website">
+              <span>Company URL</span>
+              <select data-source="crm" data-field="companyUrl">
                 <option value="">Select column</option>
               </select>
             </div>
@@ -175,8 +169,8 @@
               </select>
             </div>
             <div class="field-row">
-              <span>ARR / Revenue</span>
-              <select data-source="crm" data-field="revenue">
+              <span>ACV</span>
+              <select data-source="crm" data-field="acv">
                 <option value="">Select column</option>
               </select>
             </div>
@@ -220,9 +214,9 @@
             <span>Pipeline touched by newsletter subscribers</span>
           </div>
           <div class="metric-card">
-            <h3>Top segment</h3>
-            <p class="metric" id="top-segment">--</p>
-            <span id="top-segment-detail">Awaiting audience data</span>
+            <h3>Top company</h3>
+            <p class="metric" id="top-company">--</p>
+            <span id="top-company-detail">Awaiting audience data</span>
           </div>
         </div>
         <div class="dashboard-layout">
@@ -237,7 +231,7 @@
                   <th>Contact</th>
                   <th>Company</th>
                   <th>Stage</th>
-                  <th>ARR</th>
+                  <th>ACV</th>
                   <th>Engagement</th>
                 </tr>
               </thead>

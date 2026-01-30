@@ -6,8 +6,8 @@ const matchBody = document.getElementById("matches-body");
 const overlapRate = document.getElementById("overlap-rate");
 const overlapCount = document.getElementById("overlap-count");
 const revenueInfluenced = document.getElementById("revenue-influenced");
-const topSegment = document.getElementById("top-segment");
-const topSegmentDetail = document.getElementById("top-segment-detail");
+const topCompany = document.getElementById("top-company");
+const topCompanyDetail = document.getElementById("top-company-detail");
 const pipelineList = document.getElementById("pipeline-by-engagement");
 
 const state = {
@@ -16,6 +16,8 @@ const state = {
   audienceHeaders: [],
   crmHeaders: [],
   matches: [],
+  audienceMatchedCount: 0,
+  companyRevenueTotal: 0,
 };
 
 stepButtons.forEach((button) => {
@@ -123,10 +125,10 @@ const guessDefault = (field, headers) => {
     name: ["name", "subscriber name", "contact"],
     engagement: ["engagement", "last opened", "last open", "opens", "clicks"],
     source: ["utm", "source", "campaign"],
-    company: ["company", "account", "organization"],
-    website: ["website", "url", "domain", "company website"],
+    companyName: ["company", "account", "organization", "company name"],
+    companyUrl: ["website", "url", "domain", "company website", "company url"],
     stage: ["stage", "lifecycle", "pipeline"],
-    revenue: ["arr", "revenue", "amount", "deal value"],
+    acv: ["acv", "arr", "revenue", "amount", "deal value"],
     closeDate: ["close", "closed", "won", "date"],
   };
 
@@ -183,8 +185,8 @@ const updateDashboard = () => {
     overlapRate.textContent = "--";
     overlapCount.textContent = "Upload data to see overlap";
     revenueInfluenced.textContent = "--";
-    topSegment.textContent = "--";
-    topSegmentDetail.textContent = "Awaiting audience data";
+    topCompany.textContent = "--";
+    topCompanyDetail.textContent = "Awaiting audience data";
     pipelineList.querySelectorAll("strong").forEach((node) => {
       node.textContent = "--";
     });
@@ -198,34 +200,30 @@ const updateDashboard = () => {
       <td>${match.name || match.email}</td>
       <td>${match.company || "--"}</td>
       <td>${match.stage || "--"}</td>
-      <td>${formatCurrency(match.revenue)}</td>
+      <td>${formatCurrency(match.acv)}</td>
       <td>${match.engagement || "--"}</td>
     `;
     matchBody.appendChild(row);
   });
 
-  const overlap = state.matches.length;
+  const overlap = state.audienceMatchedCount || 0;
   const audienceTotal = state.audienceRows.length || 1;
   overlapRate.textContent = `${Math.round((overlap / audienceTotal) * 100)}%`;
   overlapCount.textContent = `${overlap.toLocaleString()} newsletter readers already in CRM`;
 
-  const totalRevenue = state.matches.reduce((sum, match) => {
-    const numeric = Number(String(match.revenue).replace(/[^\d.-]/g, ""));
-    return sum + (Number.isNaN(numeric) ? 0 : numeric);
-  }, 0);
-  revenueInfluenced.textContent = formatCurrency(totalRevenue);
+  revenueInfluenced.textContent = formatCurrency(state.companyRevenueTotal);
 
-  const topSource = state.matches.reduce((acc, match) => {
-    const key = match.source || "Direct";
+  const topCompanyCounts = state.matches.reduce((acc, match) => {
+    const key = match.company || "Unknown";
     acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
-  const [topSourceName, topSourceCount] = Object.entries(topSource).sort(
+  const [topCompanyName, topCompanyCount] = Object.entries(topCompanyCounts).sort(
     (a, b) => b[1] - a[1]
   )[0];
 
-  topSegment.textContent = topSourceName;
-  topSegmentDetail.textContent = `${topSourceCount} matches driven by this source`;
+  topCompany.textContent = topCompanyName;
+  topCompanyDetail.textContent = `${topCompanyCount} subscribers in this company`;
 
   const buckets = {
     High: 0,
@@ -241,7 +239,7 @@ const updateDashboard = () => {
     } else if (engagement.includes("medium")) {
       bucket = "Medium";
     }
-    const numeric = Number(String(match.revenue).replace(/[^\d.-]/g, ""));
+    const numeric = Number(String(match.acv).replace(/[^\d.-]/g, ""));
     buckets[bucket] += Number.isNaN(numeric) ? 0 : numeric;
   });
 
@@ -256,57 +254,70 @@ const updateDashboard = () => {
 const buildMatches = () => {
   const mapping = getMapping();
   const audienceEmailField = mapping.audience.email;
-  const crmEmailField = mapping.crm.email;
-
   if (
     !audienceEmailField ||
-    !crmEmailField ||
-    !mapping.crm.website ||
-    !mapping.crm.revenue ||
+    !mapping.crm.companyUrl ||
+    !mapping.crm.acv ||
     !mapping.crm.stage ||
-    !mapping.crm.company
+    !mapping.crm.companyName
   ) {
     matchBody.innerHTML =
-      '<tr><td colspan="5">Select required columns for audience email and CRM email, website, stage, and revenue fields.</td></tr>';
+      '<tr><td colspan="5">Select required columns for audience email and CRM company name, URL, stage, and ACV fields.</td></tr>';
     return;
   }
 
-  const audienceIndex = new Map();
   const audienceDomainIndex = new Map();
   state.audienceRows.forEach((row) => {
     const email = row[audienceEmailField]?.toLowerCase();
     if (!email) return;
     const domain = extractDomain(email);
     const entry = { ...row, __domain: domain };
-    audienceIndex.set(email, entry);
     if (domain && !audienceDomainIndex.has(domain)) {
-      audienceDomainIndex.set(domain, entry);
+      audienceDomainIndex.set(domain, []);
+    }
+    if (domain) {
+      audienceDomainIndex.get(domain).push(entry);
     }
   });
 
   state.matches = [];
+  const matchedDomains = new Set();
+  const matchedCompanyRevenue = new Map();
   state.crmRows.forEach((row) => {
-    const email = row[crmEmailField]?.toLowerCase();
-    const websiteDomain = normalizeWebsiteDomain(row[mapping.crm.website]);
-    let audience = null;
-
-    if (email && audienceIndex.has(email)) {
-      audience = audienceIndex.get(email);
-    } else if (websiteDomain) {
-      audience = audienceDomainIndex.get(websiteDomain);
+    const websiteDomain = normalizeWebsiteDomain(row[mapping.crm.companyUrl]);
+    if (!websiteDomain || !audienceDomainIndex.has(websiteDomain)) return;
+    matchedDomains.add(websiteDomain);
+    if (!matchedCompanyRevenue.has(websiteDomain)) {
+      const revenueValue = row[mapping.crm.acv];
+      matchedCompanyRevenue.set(websiteDomain, {
+        company: row[mapping.crm.companyName],
+        acv: revenueValue,
+      });
     }
-
-    if (!audience) return;
-    state.matches.push({
-      email: email || audience[audienceEmailField],
-      name: audience[mapping.audience.name] || audience[mapping.audience.email],
-      engagement: audience[mapping.audience.engagement],
-      source: audience[mapping.audience.source],
-      company: row[mapping.crm.company],
-      stage: row[mapping.crm.stage],
-      revenue: row[mapping.crm.revenue],
+    const audienceEntries = audienceDomainIndex.get(websiteDomain);
+    audienceEntries.forEach((audience) => {
+      state.matches.push({
+        email: audience[audienceEmailField],
+        name: audience[mapping.audience.name] || audience[mapping.audience.email],
+        engagement: audience[mapping.audience.engagement],
+        source: audience[mapping.audience.source],
+        company: row[mapping.crm.companyName],
+        stage: row[mapping.crm.stage],
+        acv: row[mapping.crm.acv],
+      });
     });
   });
+
+  const audienceMatchedCount = state.audienceRows.filter((row) => {
+    const email = row[audienceEmailField]?.toLowerCase();
+    const domain = extractDomain(email);
+    return domain && matchedDomains.has(domain);
+  }).length;
+  state.audienceMatchedCount = audienceMatchedCount;
+  state.companyRevenueTotal = Array.from(matchedCompanyRevenue.values()).reduce((sum, entry) => {
+    const numeric = Number(String(entry.acv).replace(/[^\d.-]/g, ""));
+    return sum + (Number.isNaN(numeric) ? 0 : numeric);
+  }, 0);
 
   updateDashboard();
 };
@@ -343,12 +354,12 @@ if (buildButton) {
 if (exportButton) {
   exportButton.addEventListener("click", () => {
     if (state.matches.length === 0) return;
-    const header = ["Contact", "Company", "Stage", "ARR", "Engagement"];
+    const header = ["Contact", "Company", "Stage", "ACV", "Engagement"];
     const rows = state.matches.map((match) => [
       match.name || match.email,
       match.company || "",
       match.stage || "",
-      match.revenue || "",
+      match.acv || "",
       match.engagement || "",
     ]);
     const csvContent = [header, ...rows]
