@@ -124,6 +124,7 @@ const guessDefault = (field, headers) => {
     engagement: ["engagement", "last opened", "last open", "opens", "clicks"],
     source: ["utm", "source", "campaign"],
     company: ["company", "account", "organization"],
+    website: ["website", "url", "domain", "company website"],
     stage: ["stage", "lifecycle", "pipeline"],
     revenue: ["arr", "revenue", "amount", "deal value"],
     closeDate: ["close", "closed", "won", "date"],
@@ -157,6 +158,22 @@ const formatCurrency = (value) => {
     currency: "USD",
     maximumFractionDigits: 0,
   });
+};
+
+const extractDomain = (email) => {
+  if (!email || !email.includes("@")) return "";
+  return email.split("@")[1].toLowerCase().trim();
+};
+
+const normalizeWebsiteDomain = (value) => {
+  if (!value) return "";
+  const cleaned = value
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0]
+    .trim();
+  return cleaned;
 };
 
 const updateDashboard = () => {
@@ -244,28 +261,44 @@ const buildMatches = () => {
   if (
     !audienceEmailField ||
     !crmEmailField ||
+    !mapping.crm.website ||
     !mapping.crm.revenue ||
     !mapping.crm.stage ||
     !mapping.crm.company
   ) {
     matchBody.innerHTML =
-      '<tr><td colspan="5">Select required columns for audience email and CRM fields.</td></tr>';
+      '<tr><td colspan="5">Select required columns for audience email and CRM email, website, stage, and revenue fields.</td></tr>';
     return;
   }
 
   const audienceIndex = new Map();
+  const audienceDomainIndex = new Map();
   state.audienceRows.forEach((row) => {
     const email = row[audienceEmailField]?.toLowerCase();
-    if (email) audienceIndex.set(email, row);
+    if (!email) return;
+    const domain = extractDomain(email);
+    const entry = { ...row, __domain: domain };
+    audienceIndex.set(email, entry);
+    if (domain && !audienceDomainIndex.has(domain)) {
+      audienceDomainIndex.set(domain, entry);
+    }
   });
 
   state.matches = [];
   state.crmRows.forEach((row) => {
     const email = row[crmEmailField]?.toLowerCase();
-    if (!email || !audienceIndex.has(email)) return;
-    const audience = audienceIndex.get(email);
+    const websiteDomain = normalizeWebsiteDomain(row[mapping.crm.website]);
+    let audience = null;
+
+    if (email && audienceIndex.has(email)) {
+      audience = audienceIndex.get(email);
+    } else if (websiteDomain) {
+      audience = audienceDomainIndex.get(websiteDomain);
+    }
+
+    if (!audience) return;
     state.matches.push({
-      email,
+      email: email || audience[audienceEmailField],
       name: audience[mapping.audience.name] || audience[mapping.audience.email],
       engagement: audience[mapping.audience.engagement],
       source: audience[mapping.audience.source],
