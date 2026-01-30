@@ -125,69 +125,59 @@
             <h3>Newsletter fields</h3>
             <div class="field-row">
               <span>Email address</span>
-              <select>
-                <option selected>Primary Email</option>
-                <option>Work Email</option>
-                <option>Alternate Email</option>
+              <select data-source="audience" data-field="email">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>Subscriber name</span>
-              <select>
-                <option selected>Contact Name</option>
-                <option>First + Last</option>
-                <option>Custom</option>
+              <select data-source="audience" data-field="name">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>Last opened</span>
-              <select>
-                <option selected>Engagement Date</option>
-                <option>Last Clicked</option>
-                <option>Inactive Date</option>
+              <select data-source="audience" data-field="engagement">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>UTM Source</span>
-              <select>
-                <option selected>Campaign Source</option>
-                <option>Channel</option>
-                <option>Ignore</option>
+              <select data-source="audience" data-field="source">
+                <option value="">Select column</option>
               </select>
             </div>
           </div>
           <div class="label-card">
             <h3>CRM fields</h3>
             <div class="field-row">
+              <span>Contact email</span>
+              <select data-source="crm" data-field="email">
+                <option value="">Select column</option>
+              </select>
+            </div>
+            <div class="field-row">
               <span>Company / Account</span>
-              <select>
-                <option selected>Account Name</option>
-                <option>Company</option>
-                <option>Ignore</option>
+              <select data-source="crm" data-field="company">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>Deal stage</span>
-              <select>
-                <option selected>Pipeline Stage</option>
-                <option>Lifecycle Stage</option>
-                <option>Ignore</option>
+              <select data-source="crm" data-field="stage">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>ARR / Revenue</span>
-              <select>
-                <option selected>Annual Revenue</option>
-                <option>Monthly Revenue</option>
-                <option>Ignore</option>
+              <select data-source="crm" data-field="revenue">
+                <option value="">Select column</option>
               </select>
             </div>
             <div class="field-row">
               <span>Last deal date</span>
-              <select>
-                <option selected>Close Date</option>
-                <option>Opportunity Date</option>
-                <option>Ignore</option>
+              <select data-source="crm" data-field="closeDate">
+                <option value="">Select column</option>
               </select>
             </div>
           </div>
@@ -200,7 +190,7 @@
               similarity. You can adjust this later.
             </p>
           </div>
-          <button class="primary-button" data-step="dashboard">Build database</button>
+          <button class="primary-button" id="build-database" data-step="dashboard">Build database</button>
         </div>
       </section>
 
@@ -215,25 +205,25 @@
         <div class="dashboard-grid">
           <div class="metric-card">
             <h3>Overlap rate</h3>
-            <p class="metric">46%</p>
-            <span>2,180 newsletter readers already in CRM</span>
+            <p class="metric" id="overlap-rate">--</p>
+            <span id="overlap-count">Upload data to see overlap</span>
           </div>
           <div class="metric-card">
             <h3>Revenue influenced</h3>
-            <p class="metric">$1.42M</p>
+            <p class="metric" id="revenue-influenced">--</p>
             <span>Pipeline touched by newsletter subscribers</span>
           </div>
           <div class="metric-card">
             <h3>Top segment</h3>
-            <p class="metric">SaaS founders</p>
-            <span>34% higher close rate</span>
+            <p class="metric" id="top-segment">--</p>
+            <span id="top-segment-detail">Awaiting audience data</span>
           </div>
         </div>
         <div class="dashboard-layout">
           <div class="table-card">
             <div class="table-header">
               <h3>Audience → Revenue matches</h3>
-              <button class="ghost-button">Export CSV</button>
+              <button class="ghost-button" id="export-csv">Export CSV</button>
             </div>
             <table>
               <thead>
@@ -245,34 +235,9 @@
                   <th>Engagement</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="matches-body">
                 <tr>
-                  <td>Maya Patel</td>
-                  <td>Soluna Health</td>
-                  <td>Negotiation</td>
-                  <td>$82k</td>
-                  <td>5 opens • 2 clicks</td>
-                </tr>
-                <tr>
-                  <td>Jon Yi</td>
-                  <td>Quartz Labs</td>
-                  <td>Qualified</td>
-                  <td>$45k</td>
-                  <td>3 opens • 1 click</td>
-                </tr>
-                <tr>
-                  <td>Alex Rivera</td>
-                  <td>StageRun</td>
-                  <td>Customer</td>
-                  <td>$120k</td>
-                  <td>8 opens • 4 clicks</td>
-                </tr>
-                <tr>
-                  <td>Lena Roth</td>
-                  <td>Brightside AI</td>
-                  <td>Discovery</td>
-                  <td>$24k</td>
-                  <td>2 opens • 0 clicks</td>
+                  <td colspan="5">Upload CSVs and build the database to see matches.</td>
                 </tr>
               </tbody>
             </table>
@@ -280,10 +245,10 @@
           <div class="sidebar">
             <div class="sidebar-card">
               <h4>Pipeline by engagement</h4>
-              <ul>
-                <li><span>High engagement</span><strong>$620k</strong></li>
-                <li><span>Medium engagement</span><strong>$430k</strong></li>
-                <li><span>Low engagement</span><strong>$170k</strong></li>
+              <ul id="pipeline-by-engagement">
+                <li><span>High engagement</span><strong>--</strong></li>
+                <li><span>Medium engagement</span><strong>--</strong></li>
+                <li><span>Low engagement</span><strong>--</strong></li>
               </ul>
             </div>
             <div class="sidebar-card">

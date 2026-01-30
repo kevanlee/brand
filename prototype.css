@@ -269,6 +269,12 @@ select {
   border-bottom: 1px solid var(--border);
 }
 
+.table-card td[colspan] {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 8px;
+}
+
 .table-card tbody tr:hover {
   background: #f1f1f1;
 }
