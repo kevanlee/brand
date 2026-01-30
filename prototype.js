@@ -4,6 +4,7 @@ const buildButton = document.getElementById("build-database");
 const exportButton = document.getElementById("export-csv");
 const fileInputs = document.querySelectorAll(".upload-box input");
 const matchBody = document.getElementById("matches-body");
+const matchHeaders = document.querySelectorAll("th[data-sort]");
 const overlapRate = document.getElementById("overlap-rate");
 const overlapCount = document.getElementById("overlap-count");
 const revenueInfluenced = document.getElementById("revenue-influenced");
@@ -22,6 +23,8 @@ const state = {
   matchedCompanyCount: 0,
   crmCompanyCount: 0,
   stageRevenueTotals: {},
+  sortKey: "company",
+  sortDirection: "desc",
 };
 
 stepButtons.forEach((button) => {
@@ -193,6 +196,46 @@ const normalizeWebsiteDomain = (value) => {
   return cleaned;
 };
 
+const parseDateValue = (value) => {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (!Number.isNaN(parsed.getTime())) return parsed;
+  const numeric = Number(value);
+  if (!Number.isNaN(numeric)) {
+    const asDate = new Date(numeric);
+    if (!Number.isNaN(asDate.getTime())) return asDate;
+  }
+  return null;
+};
+
+const getEngagementLabel = (value) => {
+  const parsed = parseDateValue(value);
+  if (!parsed) return "Unknown";
+  const now = new Date();
+  const diffDays = (now - parsed) / (1000 * 60 * 60 * 24);
+  if (diffDays <= 30) return "Engaged";
+  if (diffDays <= 90) return "Warm";
+  return "Dormant";
+};
+
+const sortMatches = () => {
+  const direction = state.sortDirection === "asc" ? 1 : -1;
+  state.matches.sort((a, b) => {
+    let left = a[state.sortKey] ?? "";
+    let right = b[state.sortKey] ?? "";
+    if (state.sortKey === "acv") {
+      left = Number(String(left).replace(/[^\d.-]/g, "")) || 0;
+      right = Number(String(right).replace(/[^\d.-]/g, "")) || 0;
+      return (left - right) * direction;
+    }
+    if (state.sortKey === "engagement") {
+      left = a.engagementLabel || "";
+      right = b.engagementLabel || "";
+    }
+    return String(left).localeCompare(String(right)) * direction;
+  });
+};
+
 const updateDashboard = () => {
   if (state.matches.length === 0) {
     matchBody.innerHTML =
@@ -209,6 +252,7 @@ const updateDashboard = () => {
   }
 
   matchBody.innerHTML = "";
+  sortMatches();
   state.matches.slice(0, 10).forEach((match) => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -216,7 +260,7 @@ const updateDashboard = () => {
       <td>${match.company || "--"}</td>
       <td>${match.stage || "--"}</td>
       <td>${formatCurrency(match.acv)}</td>
-      <td>${match.engagement || "--"}</td>
+      <td>${match.engagementLabel || "--"}</td>
     `;
     matchBody.appendChild(row);
   });
@@ -236,9 +280,12 @@ const updateDashboard = () => {
     acc[key] = (acc[key] ?? 0) + 1;
     return acc;
   }, {});
-  const [topCompanyName, topCompanyCount] = Object.entries(topCompanyCounts).sort(
-    (a, b) => b[1] - a[1]
-  )[0];
+  const [topCompanyName, topCompanyCount] = Object.entries(topCompanyCounts).sort((a, b) => {
+    if (b[1] !== a[1]) {
+      return b[1] - a[1];
+    }
+    return a[0].localeCompare(b[0]);
+  })[0];
 
   topCustomer.textContent = topCompanyName;
   topCustomerDetail.textContent = `${topCompanyCount} subscribers in this company`;
@@ -313,6 +360,7 @@ const buildMatches = () => {
         email: audience[audienceEmailField],
         name: audience[mapping.audience.name] || audience[mapping.audience.email],
         engagement: audience[mapping.audience.engagement],
+        engagementLabel: getEngagementLabel(audience[mapping.audience.engagement]),
         source: audience[mapping.audience.source],
         company: row[mapping.crm.companyName],
         stage: row[mapping.crm.stage],
@@ -381,7 +429,7 @@ if (exportButton) {
       match.company || "",
       match.stage || "",
       match.acv || "",
-      match.engagement || "",
+      match.engagementLabel || "",
     ]);
     const csvContent = [header, ...rows]
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
@@ -413,3 +461,18 @@ const observer = new IntersectionObserver(
 sections.forEach((section) => observer.observe(section));
 
 setActiveNav("landing");
+
+matchHeaders.forEach((header) => {
+  header.style.cursor = "pointer";
+  header.addEventListener("click", () => {
+    const key = header.dataset.sort;
+    if (!key) return;
+    if (state.sortKey === key) {
+      state.sortDirection = state.sortDirection === "asc" ? "desc" : "asc";
+    } else {
+      state.sortKey = key;
+      state.sortDirection = "asc";
+    }
+    updateDashboard();
+  });
+});

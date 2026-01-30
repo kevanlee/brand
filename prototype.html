@@ -85,7 +85,7 @@
             <label class="upload-box" data-upload="audience">
               <input type="file" accept=".csv" />
               <span>Drag & drop or <strong>browse</strong></span>
-              <small>Example: email, first name, engagement</small>
+              <small>Example: email, first name, last opened</small>
             </label>
             <button class="secondary-button" data-step="label">Continue to labeling</button>
           </div>
@@ -137,8 +137,8 @@
             </div>
             <div class="field-row">
               <span>
-                Engagement
-                <span class="info-icon" data-tooltip="Use opens, clicks, or recency columns to measure engagement.">i</span>
+                Last opened
+                <span class="info-icon" data-tooltip="We convert recency into Engaged, Warm, or Dormant in the dashboard.">i</span>
               </span>
               <select data-source="audience" data-field="engagement">
                 <option value="">Select column</option>
@@ -234,11 +234,11 @@
             <table>
               <thead>
                 <tr>
-                  <th>Contact</th>
-                  <th>Company</th>
-                  <th>Stage</th>
-                  <th>ACV</th>
-                  <th>Engagement</th>
+                  <th data-sort="contact">Contact</th>
+                  <th data-sort="company">Company</th>
+                  <th data-sort="stage">Stage</th>
+                  <th data-sort="acv">ACV</th>
+                  <th data-sort="engagement">Engagement</th>
                 </tr>
               </thead>
               <tbody id="matches-body">
